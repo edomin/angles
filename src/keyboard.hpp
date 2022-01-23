@@ -3,11 +3,14 @@
 
 #include <map>
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "window.hpp"
 
 class Keyboard {
     private:
-        GLFWwindow*                glfw_window;
+        GLFWwindow*        glfw_window;
         std::map<int, int> keys;
 
     public:
