@@ -17,7 +17,7 @@ class Mouse {
         Mouse(Window &window);
         ~Mouse();
 
-        bool button_down(int key);
+        bool button_down(button_t button);
 };
 
 #endif // MOUSE_HPP
