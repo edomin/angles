@@ -90,11 +90,11 @@ void Window::make_current() {
 }
 
 void Window::request_close() {
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
+    glfwSetWindowShouldClose(glfw_window, GLFW_TRUE);
 }
 
 bool Window::should_close() {
-    return glfwWindowShouldClose(window) == 0;
+    return glfwWindowShouldClose(glfw_window);
 }
 
 GLFWwindow *Window::get_glfwwindow() {
