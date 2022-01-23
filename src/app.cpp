@@ -3,15 +3,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "exception.hpp"
+
 App::App() {
-    glewExperimental = true;
-
     if (!glfwInit())
-        /* throw */
-
-    if (glewInit() != GLEW_OK)
-        /* throw */
-
+        ANG_THROW("glfwInit() failed");
 }
 
 App::~App() {

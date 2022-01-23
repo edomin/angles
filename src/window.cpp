@@ -64,6 +64,11 @@ Window::Window(unsigned width, unsigned height, const std::string &caption)
         /* throw */
 
     glfwMakeContextCurrent(glfw_window);
+
+    glewExperimental = true;
+    glew_error = glewInit();
+    if (glew_error != GLEW_OK)
+        ANG_THROW(reinterpret_cast<const char *>(glewGetErrorString(glew_error)));
 }
 
 Window::~Window() {
