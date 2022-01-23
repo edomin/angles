@@ -61,7 +61,7 @@ Window::Window(unsigned width, unsigned height, const std::string &caption)
     glfw_window = glfwCreateWindow(width, height, caption.c_str(), nullptr, nullptr);
 
     if (!glfw_window)
-        /* throw */
+        ANG_THROW("glfwCreateWindow() failed");
 
     glfwMakeContextCurrent(glfw_window);
 
@@ -69,6 +69,10 @@ Window::Window(unsigned width, unsigned height, const std::string &caption)
     glew_error = glewInit();
     if (glew_error != GLEW_OK)
         ANG_THROW(reinterpret_cast<const char *>(glewGetErrorString(glew_error)));
+
+    glfwSwapInterval(1);
+
+    glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(glfw_window, framebuffer_size_callback);
 }
 
