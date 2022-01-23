@@ -8,13 +8,16 @@ class Window {
     private:
         GLFWwindow *glfw_window;
 
+        // Not used in current implementation
+        static void framebuffer_size_callback(GLFWwindow* window, int width,
+         int height);
+
     public:
-        Window(unsigned width, unsigned height,
-         const std::string &caption);
+        Window(unsigned width, unsigned height, const std::string &caption);
         ~Window();
 
-        void Window::make_current(); // For multiple windows. Not used in current
-                                // implementation
+        // For multiple windows. Not used in current implementation
+        void make_current();
 
         void request_close();
         bool should_close();
