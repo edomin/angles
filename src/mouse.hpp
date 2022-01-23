@@ -1,7 +1,10 @@
 #ifndef MOUSE_HPP
 #define MOUSE_HPP
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "window.hpp"
 
 class Mouse {
     private:
@@ -12,7 +15,7 @@ class Mouse {
             LEFT = GLFW_MOUSE_BUTTON_LEFT,
             RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
             MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE,
-        }
+        };
 
         Mouse(Window &window);
         ~Mouse();
