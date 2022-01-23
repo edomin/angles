@@ -23,13 +23,13 @@ Keyboard::~Keyboard() {
 }
 
 bool Keyboard::register_key(int key, int glfw_key) {
-    auto [_, success] = insert({key, glfw_key});
+    auto [_, success] = keys.insert({key, glfw_key});
 
     return success;
 }
 
 bool Keyboard::key_down(int key) {
-    if keys.contains(key)
+    if (keys.contains(key))
         return glfwGetKey(glfw_window, keys.at(key)) == GLFW_PRESS;
 
     return false;
