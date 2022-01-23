@@ -14,6 +14,6 @@ App::~App() {
     glfwTerminate();
 }
 
-App::update() {
+void App::update() {
     glfwPollEvents();
 }

@@ -7,7 +7,7 @@ class App {
         App();
         ~App();
 
-        update();
-}
+        void update();
+};
 
 #endif // APP_HPP
