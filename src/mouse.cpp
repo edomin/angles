@@ -1,19 +1,19 @@
 #include "mouse.hpp"
 
-#include <vector>
-#include <utility>
+#include <map>
 
-// We use std::vector because it can be constexpr
-constexpr std::vector<std::pair<int, int>> DEFAULT_MOUSE_INPUT_MODES = {
-    {GLFW_CURSOR,               GLFW_CURSOR_NORMAL},
-    {GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE},
-    {GLFW_RAW_MOUSE_MOTION,     GLFW_FALSE},
+namespace {
+    const std::map<int, int> DEFAULT_MOUSE_INPUT_MODES = {
+        {GLFW_CURSOR,               GLFW_CURSOR_NORMAL},
+        {GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE},
+        {GLFW_RAW_MOUSE_MOTION,     GLFW_FALSE},
+    };
 }
 
 Mouse::Mouse(Window &window)
 : glfw_window(window.get_glfwwindow()) {
-    for (std::pair<int, int> mode : DEFAULT_MOUSE_INPUT_MODES)
-        glfwSetInputMode(glfw_window, mode.first, mode.second);
+    for (auto &[key, value] : DEFAULT_MOUSE_INPUT_MODES)
+        glfwSetInputMode(glfw_window, key, value);
 }
 
 Mouse::~Mouse() {

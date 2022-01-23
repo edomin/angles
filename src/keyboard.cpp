@@ -1,19 +1,19 @@
 #include "keyboard.hpp"
 
-#include <vector>
-#include <utility>
+#include <map>
 
-// We use std::vector because it can be constexpr
-constexpr std::vector<std::pair<int, int>> DEFAULT_KEYBOARD_INPUT_MODES = {
-    {GLFW_STICKY_KEYS,   GLFW_TRUE},
-    {GLFW_LOCK_KEY_MODS, GLFW_FALSE},
+namespace {
+    const std::map<int, int> DEFAULT_KEYBOARD_INPUT_MODES = {
+        {GLFW_STICKY_KEYS,   GLFW_TRUE},
+        {GLFW_LOCK_KEY_MODS, GLFW_FALSE},
+    };
 }
 
 Keyboard::Keyboard(Window &window)
 : glfw_window(window.get_glfwwindow())
 , keys() {
-    for (std::pair<int, int> mode : DEFAULT_KEYBOARD_INPUT_MODES)
-        glfwSetInputMode(glfw_window, mode.first, mode.second);
+    for (auto &[key, value] : DEFAULT_KEYBOARD_INPUT_MODES)
+        glfwSetInputMode(glfw_window, key, value);
 
 
 }
