@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 
 #include "shader_program.hpp"
+#include "vbo.hpp"
 
 class VertAttrArr {
     private:
@@ -13,7 +14,7 @@ class VertAttrArr {
         const ShaderProgram *shader_program;
 
     public:
-        VertAttrArr(const ShaderProgram &_shader_program,
+        VertAttrArr(const Vbo &vbo, const ShaderProgram &_shader_program,
          const std::string &attribute_name, size_t components_count,
          size_t offset);
         ~VertAttrArr();
