@@ -9,13 +9,15 @@
 class Window {
     private:
         GLFWwindow *glfw_window;
+        unsigned    width;
+        unsigned    height;
 
         // Not used in current implementation
-        static void framebuffer_size_callback(GLFWwindow* window, int width,
-         int height);
+        static void framebuffer_size_callback(GLFWwindow* window, int _width,
+         int _height);
 
     public:
-        Window(unsigned width, unsigned height, const std::string &caption);
+        Window(unsigned _width, unsigned _height, const std::string &caption);
         ~Window();
 
         // For multiple windows. Not used in current implementation
@@ -24,6 +26,8 @@ class Window {
         void request_close();
         bool should_close();
         GLFWwindow *get_glfwwindow();
+        unsigned get_width() const;
+        unsigned get_height() const;
 };
 
 #endif // WINDOW_HPP

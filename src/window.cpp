@@ -51,8 +51,10 @@ namespace {
     };
 }
 
-Window::Window(unsigned width, unsigned height, const std::string &caption)
-: glfw_window(nullptr) {
+Window::Window(unsigned _width, unsigned _height, const std::string &caption)
+: glfw_window(nullptr)
+, width(_width)
+, height(_height) {
     GLenum glew_error;
 
     for (auto &[key, value] : DEFAULT_WINDOW_HINTS)
@@ -80,9 +82,9 @@ Window::~Window() {
     glfwDestroyWindow(glfw_window);
 }
 
-void Window::framebuffer_size_callback(GLFWwindow* window, int width,
- int height) {
-    glViewport(0, 0, width, height);
+void Window::framebuffer_size_callback(GLFWwindow* window, int _width,
+ int _height) {
+    glViewport(0, 0, _width, _height);
 }
 
 void Window::make_current() {
@@ -99,4 +101,12 @@ bool Window::should_close() {
 
 GLFWwindow *Window::get_glfwwindow() {
     return glfw_window;
+}
+
+unsigned Window::get_width() const {
+    return width;
+}
+
+unsigned Window::get_height() const {
+    return height;
 }
