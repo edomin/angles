@@ -1,6 +1,7 @@
 #include "img_characters.hpp"
 
 #include <cstddef>
+#include <utility>
 
 namespace astchr {
     #include "assets/rpg_characters.h"
@@ -27,6 +28,12 @@ ImgCharacters::ImgCharacters()
     for (size_t i = 0; i < pixels_count; i++) {
         pdata[ALPHA_CHANNEL_INDEX] = ALPHA_SOLID;
         HEADER_PIXEL(phdrdata, pdata);
+
+        // I think gimp header image contains pixel channels in reverse order
+        // or I dont understand something
+        std::swap(pdata[0], pdata[3]);
+        std::swap(pdata[1], pdata[2]);
+
         pdata += COLOR_COMPONENTS;
     }
 }
