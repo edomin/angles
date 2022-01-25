@@ -2,9 +2,11 @@
 
 namespace {
     const GLsizei    DEFAULT_VBOS_COUNT = 1;
-    const GLsizeiptr INITIAL_VERTICES_SIZE = sizeof(float) * 9;
+    const GLsizeiptr INITIAL_VERTICES_SIZE = sizeof(float) * 15;
     const float      DUMMY_VERTICES_DATA[] = {
-        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
     };
 }
 
