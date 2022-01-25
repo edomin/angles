@@ -20,8 +20,7 @@ class Draw {
         typedef std::multimap<const Sprite *, coords_t> draw_queue_t;
 
         Window                *window;
-        // GLFWwindow            *glfw_window;
-        Vbo                   *position_buffer_object;
+        Vbo                   *vbo;
         const VertAttrArr     *pos_attr_arr;
         const VertAttrArr     *tex_coord_attr_arr;
         const ShaderProgram   *shader_program;
@@ -34,8 +33,7 @@ class Draw {
         void update_vertices_data();
 
     public:
-        Draw(Window &_window, Vbo &_position_buffer_object,
-         const VertAttrArr &_pos_attr_arr,
+        Draw(Window &_window, Vbo &_vbo, const VertAttrArr &_pos_attr_arr,
          const VertAttrArr &_tex_coord_attr_arr,
          const ShaderProgram &_shader_program);
         ~Draw();
