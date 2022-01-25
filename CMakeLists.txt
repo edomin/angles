@@ -38,6 +38,7 @@ find_package(OpenGL REQUIRED)
 
 list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/app.cpp"
+    "${CMAKE_SOURCE_DIR}/src/batch_data.cpp"
     "${CMAKE_SOURCE_DIR}/src/color.cpp"
     "${CMAKE_SOURCE_DIR}/src/draw.cpp"
     "${CMAKE_SOURCE_DIR}/src/exception.cpp"
