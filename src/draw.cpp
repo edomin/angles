@@ -1,8 +1,14 @@
 #include "draw.hpp"
 
 #include <iostream> // delete me
+#include <limits>
 
+#include "debug.hpp"
 #include "exception.hpp"
+
+namespace {
+    const float ABS_Z_MAX = std::numeric_limits<uint16_t>::max();
+}
 
 Draw::Draw(Window &_window, Vbo &_vbo,
  const VertAttrArr &_pos_attr_arr, const VertAttrArr &_tex_coord_attr_arr,
@@ -14,14 +20,21 @@ Draw::Draw(Window &_window, Vbo &_vbo,
 , shader_program(&_shader_program)
 , draw_queue()
 , vertices_data()
-, batches_data() {}
+, batches_data() {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+    glDepthRange(0.0f, 1.0f);
+    glClearDepth(1.0f);
+}
 
 Draw::~Draw() {}
 
-void Draw::add_one_vertex_data(float pos_x, float pos_y, float u, float v) {
+void Draw::add_one_vertex_data(float pos_x, float pos_y, float pos_z, float u,
+ float v) {
     vertices_data.push_back(pos_x);
     vertices_data.push_back(pos_y);
-    vertices_data.push_back(0.0f);
+    vertices_data.push_back(pos_z);
     vertices_data.push_back(u);
     vertices_data.push_back(v);
 }
@@ -36,24 +49,28 @@ void Draw::update_vertices_data() {
     vertices_data.clear();
     batches_data.clear();
 
-    for (auto &[sprite, coords] : draw_queue) {
+    for (auto &[sprite, outrect] : draw_queue) {
+        auto           [x, y, z, width, height] = outrect;
         const Texture *texture = sprite->get_spritesheet()->get_texture();
         float clip_width = static_cast<float>(
          sprite->get_spritesheet()->get_clip_width());
         float clip_height = static_cast<float>(
          sprite->get_spritesheet()->get_clip_height());
-        float pos_upper_left_x = coords.first / window_width - 1.0f;
-        float pos_upper_left_y = 1.0f - coords.second / window_height;
-        float pos_upper_right_x = (coords.first + clip_width) / window_width
+        float pos_upper_left_x = x / window_width - 1.0f;
+        float pos_upper_left_y = 1.0f - y / window_height;
+        float pos_upper_right_x = (x + clip_width) / window_width
          - 1.0f;
-        float pos_upper_right_y = 1.0f - coords.second / window_height;
-        float pos_lower_left_x = coords.first / window_width - 1.0f;
-        float pos_lower_left_y = 1.0f - (coords.second + clip_height)
+        float pos_upper_right_y = 1.0f - y / window_height;
+        float pos_lower_left_x = x / window_width - 1.0f;
+        float pos_lower_left_y = 1.0f - (y + clip_height)
          / window_height;
-        float pos_lower_right_x = (coords.first + clip_width) / window_width
+        float pos_lower_right_x = (x + clip_width) / window_width
          - 1.0f;
-        float pos_lower_right_y = 1.0f - (coords.second + clip_height)
+        float pos_lower_right_y = 1.0f - (y + clip_height)
          / window_height;
+        float pos_z = z / ABS_Z_MAX + 0.5f;
+
+        // std::cout << pos_z << std::endl;
 
         if (!current_texture)
             current_texture = texture;
@@ -67,17 +84,17 @@ void Draw::update_vertices_data() {
             current_texture = texture;
         }
 
-        add_one_vertex_data(pos_upper_left_x, pos_upper_left_y,
+        add_one_vertex_data(pos_upper_left_x, pos_upper_left_y, pos_z,
          sprite->get_upper_left_u(), sprite->get_upper_left_v());
-        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,
+        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,pos_z,
          sprite->get_upper_right_u(), sprite->get_upper_right_v());
-        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,
+        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,pos_z,
          sprite->get_lower_left_u(), sprite->get_lower_left_v());
-        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,
+        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,pos_z,
          sprite->get_upper_right_u(), sprite->get_upper_right_v());
-        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,
+        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,pos_z,
          sprite->get_lower_left_u(), sprite->get_lower_left_v());
-        add_one_vertex_data(pos_lower_right_x, pos_lower_right_y,
+        add_one_vertex_data(pos_lower_right_x, pos_lower_right_y,pos_z,
          sprite->get_lower_right_u(), sprite->get_lower_right_v());
 
         vertex_index += 6;
@@ -96,8 +113,9 @@ void Draw::fill(const Color &color) {
     glClearColor(color.get_r(), color.get_g(), color.get_b(), color.get_a());
 }
 
-void Draw::put_sprite(const Sprite &sprite, float x, float y) {
-    draw_queue.insert({&sprite, {x, y}});
+void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
+ float width, float height) {
+    draw_queue.insert({&sprite, {x, y, z, width, height}});
 }
 
 void Draw::update() {
@@ -105,7 +123,7 @@ void Draw::update() {
 
     update_vertices_data();
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader_program->use();
     vbo->bind();

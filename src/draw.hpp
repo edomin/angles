@@ -16,8 +16,15 @@
 
 class Draw {
     private:
-        typedef std::pair<float, float> coords_t;
-        typedef std::multimap<const Sprite *, coords_t> draw_queue_t;
+        // typedef std::pair<float, float> coords_t;
+        typedef std::tuple<
+            float, // x - 0..window_width
+            float, // y - 0..window_height
+            float, // z - -int32max..+int32max
+            float, // width - any
+            float  // height - any
+        > outrect_t;
+        typedef std::multimap<const Sprite *, outrect_t> draw_queue_t;
 
         Window                *window;
         Vbo                   *vbo;
@@ -29,7 +36,8 @@ class Draw {
         std::vector<float>     vertices_data;
         std::vector<BatchData> batches_data;
 
-        void add_one_vertex_data(float pos_x, float pos_y, float u, float v);
+        void add_one_vertex_data(float pos_x, float pos_y, float pos_z, float u,
+         float v);
         void update_vertices_data();
 
     public:
@@ -40,7 +48,8 @@ class Draw {
 
         void clear();
         void fill(const Color &color);
-        void put_sprite(const Sprite &sprite, float x, float y);
+        void put_sprite(const Sprite &sprite, float x, float y, float z,
+         float width, float height);
         void update();
 };
 

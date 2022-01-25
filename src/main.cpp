@@ -63,17 +63,8 @@ int main(int argc, char **argv) {
     while (!window.should_close()) {
         [[maybe_unused]] double delta_time = timer.update();
 
-        draw.put_sprite(spr_floor, 200.0f, 32.0f);
-        draw.put_sprite(spr_floor, 500.0f, 132.0f);
-        draw.put_sprite(spr_floor, 200.0f, 232.0f);
-        draw.put_sprite(spr_floor, 500.0f, 332.0f);
-        draw.put_sprite(spr_floor, 200.0f, 432.0f);
-        draw.put_sprite(spr_boy, 20.0f, 32.0f);
-        draw.put_sprite(spr_boy, 40.0f, 32.0f);
-        draw.put_sprite(spr_boy, 60.0f, 32.0f);
-        draw.put_sprite(spr_girl, 80.0f, 32.0f);
-        draw.put_sprite(spr_girl, 100.0f, 32.0f);
-        draw.put_sprite(spr_boy, 120.0f, 32.0f);
+        draw.put_sprite(spr_floor, 20.0f, 32.0f, 300.0f, 0.0f, 0.0f);
+        draw.put_sprite(spr_boy, 12.0f, 32.0f, 301.0f, 0.0f, 0.0f);
 
         draw.update();
         app.update();

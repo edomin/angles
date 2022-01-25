@@ -21,7 +21,7 @@ namespace {
         {GLFW_GREEN_BITS,               8},
         {GLFW_BLUE_BITS,                8},
         {GLFW_ALPHA_BITS,               8},
-        {GLFW_DEPTH_BITS,               GLFW_DONT_CARE},
+        {GLFW_DEPTH_BITS,               24},
         {GLFW_STENCIL_BITS,             GLFW_DONT_CARE},
         {GLFW_ACCUM_RED_BITS,           GLFW_DONT_CARE},
         {GLFW_ACCUM_GREEN_BITS,         GLFW_DONT_CARE},
