@@ -61,7 +61,7 @@ void Draw::update_vertices_data() {
             // std::cout << "current_texture: " << current_texture << std::endl;
             // std::cout << "texture: " << texture << std::endl;
 
-            BatchData batch_data(*current_texture, first_vertex_index * sizeof(float) * 5,
+            BatchData batch_data(*current_texture, first_vertex_index,
              vertex_index - first_vertex_index);
 
             batches_data.push_back(batch_data);
@@ -84,7 +84,7 @@ void Draw::update_vertices_data() {
 
         vertex_index += 6;
     }
-    BatchData batch_data(*current_texture, first_vertex_index * sizeof(float) * 5,
+    BatchData batch_data(*current_texture, first_vertex_index,
      vertex_index - first_vertex_index);
 
     batches_data.push_back(batch_data);
@@ -155,11 +155,15 @@ void Draw::update() {
 
     shader_program->use();
     // std::cout << batches_data.size() << std::endl;
+    position_buffer_object->bind();
+    position_buffer_object->set_vertices(vertices_data.data(),
+     sizeof(float) * vertices_data.size());
     for (size_t i = 0; i < batches_data.size(); i++) {
-        position_buffer_object->bind();
-        position_buffer_object->set_vertices(
-         vertices_data.data() + batches_data[i].get_vbo_offset(),
-         batches_data[i].get_vertices_size());
+        // position_buffer_object->bind();
+        // position_buffer_object->set_vertices(
+        //  vertices_data.data() + batches_data[i].get_vbo_offset(),
+        //  batches_data[i].get_vertices_size());
+
         // position_buffer_object->set_vertices(
         //  vertices_data.data(),
         //  sizeof(float) * 30);
@@ -185,7 +189,7 @@ void Draw::update() {
 
         batches_data[i].get_texture()->bind();
 
-        glDrawArrays(GL_TRIANGLES, 0, batches_data[i].get_vertices_count());
+        glDrawArrays(GL_TRIANGLES, batches_data[i].get_first_vertex_index(), batches_data[i].get_vertices_count());
 
         error = glGetError();
         if (error != GL_NO_ERROR)
@@ -193,8 +197,8 @@ void Draw::update() {
 
         pos_attr_arr->disable();
         tex_coord_attr_arr->disable();
-        position_buffer_object->unbind();
     }
+    position_buffer_object->unbind();
     shader_program->unuse();
 
     glfwSwapBuffers(window->get_glfwwindow());
