@@ -2,6 +2,8 @@
 #define DRAW_HPP
 
 #include <map>
+#include <memory>
+#include <tuple>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -26,27 +28,25 @@ class Draw {
         > outrect_t;
         typedef std::multimap<const Sprite *, outrect_t> draw_queue_t;
 
-        static constexpr float SCALE_NO             = 1.0f;
-        static constexpr float SCALE_SAME_AS_HSCALE = 0.0f;
+        static constexpr float         SCALE_NO             = 1.0f;
+        static constexpr float         SCALE_SAME_AS_HSCALE = 0.0f;
 
-        Window                *window;
-        Vbo                   *vbo;
-        const VertAttrArr     *pos_attr_arr;
-        const VertAttrArr     *tex_coord_attr_arr;
-        const ShaderProgram   *shader_program;
+        Window                        *window;
+        Vbo                            vbo;
+        std::unique_ptr<VertAttrArr>   pos_attr_arr;
+        std::unique_ptr<VertAttrArr>   tex_coord_attr_arr;
+        std::unique_ptr<ShaderProgram> shader_program;
 
-        draw_queue_t           draw_queue;
-        std::vector<float>     vertices_data;
-        std::vector<BatchData> batches_data;
+        draw_queue_t                   draw_queue;
+        std::vector<float>             vertices_data;
+        std::vector<BatchData>         batches_data;
 
         void add_one_vertex_data(float pos_x, float pos_y, float pos_z, float u,
          float v);
         void update_vertices_data();
 
     public:
-        Draw(Window &_window, Vbo &_vbo, const VertAttrArr &_pos_attr_arr,
-         const VertAttrArr &_tex_coord_attr_arr,
-         const ShaderProgram &_shader_program);
+        Draw(Window &_window);
         ~Draw();
 
         void fill(const Color &color);

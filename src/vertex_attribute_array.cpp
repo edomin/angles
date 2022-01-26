@@ -16,7 +16,8 @@ VertAttrArr::VertAttrArr(const Vbo &vbo, const ShaderProgram &_shader_program,
     glEnableVertexAttribArray(attribute_location);
     vbo.bind();
     glVertexAttribPointer(attribute_location, components_count, GL_FLOAT,
-     GL_FALSE, sizeof(float) * 5, reinterpret_cast<void *>(offset));
+     GL_FALSE, sizeof(float) * vbo.get_components_per_vertex(),
+     reinterpret_cast<void *>(offset));
 
     error = glGetError();
     if (error != GL_NO_ERROR)

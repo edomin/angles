@@ -2,30 +2,72 @@
 
 #include <iostream> // delete me
 #include <limits>
+#include <memory>
 
 #include "debug.hpp"
 #include "exception.hpp"
+#include "shader.hpp"
+
+using namespace std::string_literals;
 
 namespace {
-    const float ABS_Z_MAX = std::numeric_limits<uint16_t>::max();
+    // I believe my compiler doesn't support constexpr string literals
+    const std::string VERTEX_SHADER_SOURCE =
+    "#version 330 core\n"
+    "attribute vec3 pos;\n"
+    "attribute vec2 vert_tex_coord;\n"
+    "out       vec2 frag_tex_coord;\n"
+    "void main() {\n"
+    "    gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);\n"
+    "    frag_tex_coord = vert_tex_coord;\n"
+    "}\n"s;
+    const std::string FRAGMENT_SHADER_SOURCE =
+    "#version 330 core\n"
+    "in  vec2 frag_tex_coord;\n"
+    "out vec4 color;\n"
+    "uniform sampler2D in_texture;"
+    "void main() {\n"
+    "    color = texture(in_texture, frag_tex_coord);\n"
+    "}\n"s;
+
+    const size_t      VBO_COMPONENTS_PER_VERTEX      = 5;
+    const std::string ATTR_POS_NAME                  = "pos"s;
+    const size_t      ATTR_POS_COMPONENTS_COUNT      = 3;
+    const size_t      ATTR_POS_OFFSET                = 0;
+    const std::string ATTR_TEXTCOORD_NAME            = "vert_tex_coord"s;
+    const size_t      ATTR_TEXCOORD_COMPONENTS_COUNT = 2;
+    const size_t      ATTR_TEXCOORD_OFFSET           = sizeof(float) * ATTR_POS_COMPONENTS_COUNT;
+    const float       ABS_Z_MAX                      = std::numeric_limits<uint16_t>::max();
+    const GLdouble    DEPTH_RANGE_NEAR_VAL           = 0.0;
+    const GLdouble    DEPTH_RANGE_FAR_VAL            = 1.0;
 }
 
-Draw::Draw(Window &_window, Vbo &_vbo,
- const VertAttrArr &_pos_attr_arr, const VertAttrArr &_tex_coord_attr_arr,
- const ShaderProgram &_shader_program)
+Draw::Draw(Window &_window)
 : window(&_window)
-, vbo(&_vbo)
-, pos_attr_arr(&_pos_attr_arr)
-, tex_coord_attr_arr(&_tex_coord_attr_arr)
-, shader_program(&_shader_program)
+, vbo(VBO_COMPONENTS_PER_VERTEX)
+, pos_attr_arr()
+, tex_coord_attr_arr()
+, shader_program()
 , draw_queue()
 , vertices_data()
 , batches_data() {
+    std::unique_ptr<Shader> vertex_shader = std::make_unique<Shader>(
+     Shader::type_t::VERTEX, VERTEX_SHADER_SOURCE);
+    std::unique_ptr<Shader> fragment_shader = std::make_unique<Shader>(
+     Shader::type_t::FRAGMENT, FRAGMENT_SHADER_SOURCE);
+
+    shader_program = std::make_unique<ShaderProgram>(*vertex_shader,
+     *fragment_shader);
+    pos_attr_arr = std::make_unique<VertAttrArr>(vbo, *shader_program,
+     ATTR_POS_NAME, ATTR_POS_COMPONENTS_COUNT, ATTR_POS_OFFSET);
+    tex_coord_attr_arr = std::make_unique<VertAttrArr>(vbo, *shader_program,
+     ATTR_TEXTCOORD_NAME, ATTR_TEXCOORD_COMPONENTS_COUNT, ATTR_TEXCOORD_OFFSET);
+
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
-    glDepthRange(0.0f, 1.0f);
-    glClearDepth(1.0f);
+    glDepthRange(DEPTH_RANGE_NEAR_VAL, DEPTH_RANGE_FAR_VAL);
+    glClearDepth(DEPTH_RANGE_FAR_VAL);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -76,8 +118,6 @@ void Draw::update_vertices_data() {
         float pos_lower_right_y = pos_lower_left_y;
         float pos_z = z / ABS_Z_MAX + 0.5f;
 
-        // std::cout << pos_z << std::endl;
-
         if (!current_texture)
             current_texture = texture;
 
@@ -126,8 +166,8 @@ void Draw::update() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader_program->use();
-    vbo->bind();
-    vbo->set_vertices(vertices_data.data(),
+    vbo.bind();
+    vbo.set_vertices(vertices_data.data(),
      sizeof(float) * vertices_data.size());
     for (size_t i = 0; i < batches_data.size(); i++) {
         pos_attr_arr->enable();
@@ -145,7 +185,7 @@ void Draw::update() {
         pos_attr_arr->disable();
         tex_coord_attr_arr->disable();
     }
-    vbo->unbind();
+    vbo.unbind();
     shader_program->unuse();
 
     glfwSwapBuffers(window->get_glfwwindow());

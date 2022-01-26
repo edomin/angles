@@ -10,8 +10,9 @@ namespace {
     };
 }
 
-Vbo::Vbo()
+Vbo::Vbo(size_t _components_per_vertex)
 : id()
+, components_per_vertex(_components_per_vertex)
 , vertices_size(INITIAL_VERTICES_SIZE) {
     glGenBuffers(DEFAULT_VBOS_COUNT, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
@@ -39,4 +40,8 @@ void Vbo::set_vertices(void *vertices, size_t size) {
     } else {
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertices);
     }
+}
+
+size_t Vbo::get_components_per_vertex() const {
+    return components_per_vertex;
 }
