@@ -12,13 +12,13 @@ Texture::Texture(void *data, unsigned _width, unsigned _height)
 , height(_height) {
     GLenum error;
 
+    glGenTextures(DEFAULT_TEXTURES_COUNT, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
      GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glGenTextures(DEFAULT_TEXTURES_COUNT, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
     glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA, width, height, 0,  GL_RGBA,
      GL_UNSIGNED_INT_8_8_8_8, data);
     // glTexImage2D(GL_TEXTURE_2D, 0,  GL_RGBA, width, height, 0,  GL_RGBA,
