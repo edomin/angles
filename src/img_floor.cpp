@@ -1,5 +1,6 @@
 #include "img_floor.hpp"
 
+#include <bit>
 #include <cstddef>
 #include <utility>
 
@@ -9,32 +10,32 @@ namespace astfloor {
 #include "exception.hpp"
 
 namespace {
-    const unsigned COLOR_COMPONENTS = 4;
-    const unsigned ALPHA_CHANNEL_INDEX = 3;
-    const unsigned ALPHA_SOLID = 255;
+    constexpr unsigned COLOR_COMPONENTS = 4;
 }
 
 ImgFloor::ImgFloor()
-: width(astfloor::width)
-, height(astfloor::height)
+: width(astfloor::gimp_image.width)
+, height(astfloor::gimp_image.height)
 , data(new uint8_t[width * height * COLOR_COMPONENTS]) {
-    uint8_t *pdata = data;
-    char    *phdrdata = astfloor::header_data;
-    size_t   pixels_count = width * height;
+    size_t pixels_count = width * height;
 
-    if (!data)
-        ANG_THROW("new failed");
+    static_assert(astfloor::gimp_image.bytes_per_pixel == COLOR_COMPONENTS);
 
     for (size_t i = 0; i < pixels_count; i++) {
-        pdata[ALPHA_CHANNEL_INDEX] = ALPHA_SOLID;
-        HEADER_PIXEL(phdrdata, pdata);
+        size_t rindex = i * COLOR_COMPONENTS;
+        size_t gindex = i * COLOR_COMPONENTS + 1;
+        size_t bindex = i * COLOR_COMPONENTS + 2;
+        size_t aindex = i * COLOR_COMPONENTS + 3;
 
-        // I think gimp header image contains pixel channels in reverse order
-        // or I dont understand something
-        std::swap(pdata[0], pdata[3]);
-        std::swap(pdata[1], pdata[2]);
+        data[rindex] = astfloor::gimp_image.pixel_data[rindex];
+        data[gindex] = astfloor::gimp_image.pixel_data[gindex];
+        data[bindex] = astfloor::gimp_image.pixel_data[bindex];
+        data[aindex] = astfloor::gimp_image.pixel_data[aindex];
 
-        pdata += COLOR_COMPONENTS;
+        if constexpr (std::endian::native == std::endian::little) {
+            std::swap(data[rindex], data[aindex]);
+            std::swap(data[gindex], data[bindex]);
+        }
     }
 }
 
