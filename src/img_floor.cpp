@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace astfloor {
-    #include "assets/stone_floor.h"
+    #include "assets/stone_floor.hpp"
 }
 #include "exception.hpp"
 

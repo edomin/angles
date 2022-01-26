@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace astchr {
-    #include "assets/rpg_characters.h"
+    #include "assets/rpg_characters.hpp"
 }
 #include "exception.hpp"
 
