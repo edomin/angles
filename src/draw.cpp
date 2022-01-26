@@ -45,11 +45,17 @@ void Draw::update_vertices_data() {
     const Texture *current_texture = nullptr;
     size_t         first_vertex_index = 0;
     size_t         vertex_index = 0;
-    float          window_width = static_cast<float>(window->get_width());
-    float          window_height = static_cast<float>(window->get_height());
+    float          window_width;
+    float          window_height;
 
     vertices_data.clear();
     batches_data.clear();
+
+    if (draw_queue.size() == 0)
+        return;
+
+    window_width = static_cast<float>(window->get_width());
+    window_height = static_cast<float>(window->get_height());
 
     for (auto &[sprite, outrect] : draw_queue) {
         auto           [x, y, z, hscale, vscale] = outrect;
