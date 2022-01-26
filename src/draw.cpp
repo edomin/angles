@@ -26,6 +26,8 @@ Draw::Draw(Window &_window, Vbo &_vbo,
     glDepthFunc(GL_LESS);
     glDepthRange(0.0f, 1.0f);
     glClearDepth(1.0f);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Draw::~Draw() {}
