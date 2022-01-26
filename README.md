@@ -1,3 +1,7 @@
+# Why "Angles"?  
+Well, I incorrectly translated word "Уголки" to English. I believe correct 
+name of this game is "Corners".
+
 # Prerequisites
  * Cmake >=3.12
 
