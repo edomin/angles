@@ -49,6 +49,7 @@ list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/main.cpp"
     "${CMAKE_SOURCE_DIR}/src/mouse.cpp"
     "${CMAKE_SOURCE_DIR}/src/point.cpp"
+    "${CMAKE_SOURCE_DIR}/src/res_keeper.cpp"
     "${CMAKE_SOURCE_DIR}/src/shader.cpp"
     "${CMAKE_SOURCE_DIR}/src/shader_program.cpp"
     "${CMAKE_SOURCE_DIR}/src/sprite.cpp"
