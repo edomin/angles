@@ -17,15 +17,6 @@ Sprite::Sprite(const Spritesheet &_spritesheet, unsigned clip_index)
     float clip_width = spritesheet->get_clip_width();
     float clip_height = spritesheet->get_clip_height();
 
-    // upper_left_u = clip_x / texture_width;
-    // upper_left_v = 1.0f - clip_y / texture_height;
-    // upper_right_u = (clip_x + clip_width) / texture_width;
-    // upper_right_v = 1.0f - clip_y / texture_height;
-    // lower_left_u = clip_x / texture_width;
-    // lower_left_v = 1.0f - (clip_y + clip_height) / texture_height;
-    // lower_right_u = (clip_x + clip_width) / texture_width;
-    // lower_right_v = 1.0f - (clip_y + clip_height) / texture_height;
-
     upper_left_u = clip_x / texture_width;
     upper_left_v = clip_y / texture_height;
     upper_right_u = (clip_x + clip_width) / texture_width;
@@ -34,8 +25,6 @@ Sprite::Sprite(const Spritesheet &_spritesheet, unsigned clip_index)
     lower_left_v = (clip_y + clip_height) / texture_height;
     lower_right_u = (clip_x + clip_width) / texture_width;
     lower_right_v = (clip_y + clip_height) / texture_height;
-
-
 }
 
 Sprite::~Sprite() {}
