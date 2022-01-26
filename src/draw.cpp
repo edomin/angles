@@ -105,14 +105,6 @@ void Draw::update_vertices_data() {
     batches_data.push_back(batch_data);
 }
 
-void Draw::clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void Draw::fill(const Color &color) {
-    glClearColor(color.get_r(), color.get_g(), color.get_b(), color.get_a());
-}
-
 void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
  float hscale, float vscale) {
     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))

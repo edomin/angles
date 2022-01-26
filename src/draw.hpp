@@ -49,7 +49,6 @@ class Draw {
          const ShaderProgram &_shader_program);
         ~Draw();
 
-        void clear();
         void fill(const Color &color);
         void put_sprite(const Sprite &sprite, float x, float y, float z,
          float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
