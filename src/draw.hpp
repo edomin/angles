@@ -21,10 +21,13 @@ class Draw {
             float, // x - 0..window_width
             float, // y - 0..window_height
             float, // z - -int32max..+int32max
-            float, // width - any
-            float  // height - any
+            float, // hscale - any
+            float  // vscale - any
         > outrect_t;
         typedef std::multimap<const Sprite *, outrect_t> draw_queue_t;
+
+        static constexpr float SCALE_NO             = 1.0f;
+        static constexpr float SCALE_SAME_AS_HSCALE = 0.0f;
 
         Window                *window;
         Vbo                   *vbo;
@@ -49,7 +52,7 @@ class Draw {
         void clear();
         void fill(const Color &color);
         void put_sprite(const Sprite &sprite, float x, float y, float z,
-         float width, float height);
+         float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
         void update();
 };
 

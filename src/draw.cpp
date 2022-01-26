@@ -50,7 +50,7 @@ void Draw::update_vertices_data() {
     batches_data.clear();
 
     for (auto &[sprite, outrect] : draw_queue) {
-        auto           [x, y, z, width, height] = outrect;
+        auto           [x, y, z, hscale, vscale] = outrect;
         const Texture *texture = sprite->get_spritesheet()->get_texture();
         float clip_width = static_cast<float>(
          sprite->get_spritesheet()->get_clip_width());
@@ -58,16 +58,14 @@ void Draw::update_vertices_data() {
          sprite->get_spritesheet()->get_clip_height());
         float pos_upper_left_x = x / window_width - 1.0f;
         float pos_upper_left_y = 1.0f - y / window_height;
-        float pos_upper_right_x = (x + clip_width) / window_width
+        float pos_upper_right_x = (x + clip_width * hscale) / window_width
          - 1.0f;
-        float pos_upper_right_y = 1.0f - y / window_height;
-        float pos_lower_left_x = x / window_width - 1.0f;
-        float pos_lower_left_y = 1.0f - (y + clip_height)
+        float pos_upper_right_y = pos_upper_left_y;
+        float pos_lower_left_x = pos_upper_left_x;
+        float pos_lower_left_y = 1.0f - (y + clip_height * vscale)
          / window_height;
-        float pos_lower_right_x = (x + clip_width) / window_width
-         - 1.0f;
-        float pos_lower_right_y = 1.0f - (y + clip_height)
-         / window_height;
+        float pos_lower_right_x = pos_upper_right_x;
+        float pos_lower_right_y = pos_lower_left_y;
         float pos_z = z / ABS_Z_MAX + 0.5f;
 
         // std::cout << pos_z << std::endl;
@@ -114,8 +112,10 @@ void Draw::fill(const Color &color) {
 }
 
 void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
- float width, float height) {
-    draw_queue.insert({&sprite, {x, y, z, width, height}});
+ float hscale, float vscale) {
+    if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
+        vscale = hscale;
+    draw_queue.insert({&sprite, {x, y, z, hscale, vscale}});
 }
 
 void Draw::update() {
