@@ -7,7 +7,7 @@ class App {
         App();
         ~App();
 
-        void update();
+        void update() const;
 };
 
 #endif // APP_HPP
