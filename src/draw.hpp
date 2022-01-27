@@ -1,15 +1,15 @@
 #ifndef DRAW_HPP
 #define DRAW_HPP
 
-#include <map>
+// #include <unordered_map>
 #include <memory>
 #include <tuple>
+#include <vector>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "batch_data.hpp"
-#include "color.hpp"
 #include "vbo.hpp"
 #include "shader_program.hpp"
 #include "sprite.hpp"
@@ -20,13 +20,14 @@ class Draw {
     private:
         // typedef std::pair<float, float> coords_t;
         typedef std::tuple<
+            const Sprite *,
             float, // x - 0..window_width
             float, // y - 0..window_height
             float, // z - -int32max..+int32max
             float, // hscale - any
             float  // vscale - any
-        > outrect_t;
-        typedef std::multimap<const Sprite *, outrect_t> draw_queue_t;
+        > outdata_t;
+        typedef std::vector<outdata_t> draw_queue_t;
 
         static constexpr float         SCALE_NO             = 1.0f;
         static constexpr float         SCALE_SAME_AS_HSCALE = 0.0f;
@@ -49,7 +50,7 @@ class Draw {
         Draw(Window &_window);
         ~Draw();
 
-        void fill(const Color &color);
+        // void fill(const Color &color);
         void put_sprite(const Sprite &sprite, float x, float y, float z,
          float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
         void update();

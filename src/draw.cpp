@@ -4,6 +4,7 @@
 #include <limits>
 #include <memory>
 
+#include "color.hpp"
 #include "debug.hpp"
 #include "exception.hpp"
 #include "shader.hpp"
@@ -30,16 +31,17 @@ namespace {
     "    color = texture(in_texture, frag_tex_coord);\n"
     "}\n"s;
 
-    const size_t      VBO_COMPONENTS_PER_VERTEX      = 5;
-    const std::string ATTR_POS_NAME                  = "pos"s;
-    const size_t      ATTR_POS_COMPONENTS_COUNT      = 3;
-    const size_t      ATTR_POS_OFFSET                = 0;
-    const std::string ATTR_TEXTCOORD_NAME            = "vert_tex_coord"s;
-    const size_t      ATTR_TEXCOORD_COMPONENTS_COUNT = 2;
-    const size_t      ATTR_TEXCOORD_OFFSET           = sizeof(float) * ATTR_POS_COMPONENTS_COUNT;
-    const float       ABS_Z_MAX                      = std::numeric_limits<uint16_t>::max();
-    const GLdouble    DEPTH_RANGE_NEAR_VAL           = 0.0;
-    const GLdouble    DEPTH_RANGE_FAR_VAL            = 1.0;
+    const size_t       VBO_COMPONENTS_PER_VERTEX      = 5;
+    const std::string  ATTR_POS_NAME                  = "pos"s;
+    const size_t       ATTR_POS_COMPONENTS_COUNT      = 3;
+    const size_t       ATTR_POS_OFFSET                = 0;
+    const std::string  ATTR_TEXTCOORD_NAME            = "vert_tex_coord"s;
+    const size_t       ATTR_TEXCOORD_COMPONENTS_COUNT = 2;
+    const size_t       ATTR_TEXCOORD_OFFSET           = sizeof(float) * ATTR_POS_COMPONENTS_COUNT;
+    const float        ABS_Z_MAX                      = std::numeric_limits<uint16_t>::max();
+    const GLdouble     DEPTH_RANGE_NEAR_VAL           = 0.0;
+    const GLdouble     DEPTH_RANGE_FAR_VAL            = 1.0;
+    const Color        CLEAR_COLOR(0x00000000);
 }
 
 Draw::Draw(Window &_window)
@@ -70,6 +72,7 @@ Draw::Draw(Window &_window)
     glClearDepth(DEPTH_RANGE_FAR_VAL);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(CLEAR_COLOR.get_r(), CLEAR_COLOR.get_g(), CLEAR_COLOR.get_b(), CLEAR_COLOR.get_a());
 }
 
 Draw::~Draw() {}
@@ -96,11 +99,34 @@ void Draw::update_vertices_data() {
     if (draw_queue.size() == 0)
         return;
 
+    // Тут явно напрашивается рефакторинг и поиск более оптимальных решений (в
+    // том числе подумать, в каком контейнере хранить draw queue, как быстро
+    // сортировать, надо ли тащить указатель на спрайт или хватит указателя на
+    // текстуру и т. д.), но я уже не успеваю. Обещаю, после сдачи задания
+    // сделаю по уму.
+    auto cmp = [](const outdata_t &a, const outdata_t &b) {
+        float          az;
+        float          bz;
+        const Sprite  *aspr;
+        const Sprite  *bspr;
+        const Texture *atex;
+        const Texture *btex;
+
+        std::tie(aspr, std::ignore, std::ignore, az, std::ignore, std::ignore) = a;
+        std::tie(bspr, std::ignore, std::ignore, bz, std::ignore, std::ignore) = b;
+
+        atex = aspr->get_spritesheet()->get_texture();
+        btex = bspr->get_spritesheet()->get_texture();
+
+        return az == bz ? atex < btex : az > bz;
+    };
+    std::sort(draw_queue.begin(), draw_queue.end(), cmp);
+
     window_width = static_cast<float>(window->get_width());
     window_height = static_cast<float>(window->get_height());
 
-    for (auto &[sprite, outrect] : draw_queue) {
-        auto           [x, y, z, hscale, vscale] = outrect;
+    for (outdata_t &outdata : draw_queue) {
+        auto           [sprite, x, y, z, hscale, vscale] = outdata;
         const Texture *texture = sprite->get_spritesheet()->get_texture();
         float clip_width = static_cast<float>(
          sprite->get_spritesheet()->get_clip_width());
@@ -155,7 +181,7 @@ void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
  float hscale, float vscale) {
     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
         vscale = hscale;
-    draw_queue.insert({&sprite, {x, y, z, hscale, vscale}});
+    draw_queue.push_back({&sprite, x, y, z, hscale, vscale});
 }
 
 void Draw::update() {
@@ -163,6 +189,7 @@ void Draw::update() {
 
     update_vertices_data();
 
+    // glClearColor(color.get_r(), color.get_g(), color.get_b(), color.get_a());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader_program->use();
