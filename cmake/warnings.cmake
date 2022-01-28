@@ -3,8 +3,8 @@ function(ang_add_more_warnings COMPILE_OPTIONS)
         return()
     endif()
 
-    ang_process_flag_availability(ANG_FANALYZER_WNO_ANALYZER_MALLOC_LEAK
-     "-fanalyzer -Wno-analyzer-malloc-leak" "")
+    # ang_process_flag_availability(ANG_FANALYZER_WNO_ANALYZER_MALLOC_LEAK
+    #  "-fanalyzer -Wno-analyzer-malloc-leak" "")
     ang_process_flag_availability(ANG_WABSTRACT_VTABLE_INIT
         "-Wabstract-vtable-init" "")
     ang_process_flag_availability(ANG_WALLOCA "-Walloca" "")
@@ -277,7 +277,8 @@ function(ang_add_more_warnings COMPILE_OPTIONS)
     unset(ANG_WARNINGS)
 
     list(APPEND ANG_WARNINGS
-        ${ANG_FANALYZER_WNO_ANALYZER_MALLOC_LEAK}
+        # https://stackoverflow.com/questions/64594953/stdvector-null-pointer-dereference-from-g-fanalyzer
+        # ${ANG_FANALYZER_WNO_ANALYZER_MALLOC_LEAK}
         ${ANG_WALLOCA}
         ${ANG_WALLOC_ZERO}
         ${ANG_WANON_ENUM_ENUM_CONVERSION}

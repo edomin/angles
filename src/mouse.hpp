@@ -20,7 +20,9 @@ class Mouse {
         Mouse(Window &window);
         ~Mouse();
 
+        std::tuple<float, float> get_cursor_pos();
         bool button_down(button_t button);
+        bool button_up(button_t button);
 };
 
 #endif // MOUSE_HPP

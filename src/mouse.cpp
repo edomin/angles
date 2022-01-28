@@ -20,8 +20,23 @@ Mouse::~Mouse() {
 
 }
 
+std::tuple<float, float> Mouse::get_cursor_pos() {
+    double mouse_x;
+    double mouse_y;
+
+    glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
+
+    return {mouse_x, mouse_y};
+}
+
 bool Mouse::button_down(button_t button) {
     int glfw_button = static_cast<std::underlying_type_t<button_t>>(button);
 
     return glfwGetMouseButton(glfw_window, glfw_button) == GLFW_PRESS;
+}
+
+bool Mouse::button_up(button_t button) {
+    int glfw_button = static_cast<std::underlying_type_t<button_t>>(button);
+
+    return glfwGetMouseButton(glfw_window, glfw_button) == GLFW_RELEASE;
 }

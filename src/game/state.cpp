@@ -2,7 +2,8 @@
 
 namespace {
     const std::map<game::State::phase_t, game::State::phase_t> TRANSITIONS = {
-        {game::State::phase_t::PLAYER_TURN,        game::State::phase_t::PLAYER_ANIMATION},
+        {game::State::phase_t::PLAYER_TURN,        game::State::phase_t::CHARACTER_SELECTED},
+        {game::State::phase_t::CHARACTER_SELECTED, game::State::phase_t::PLAYER_ANIMATION},
         {game::State::phase_t::PLAYER_ANIMATION,   game::State::phase_t::COMPUTER_TURN},
         {game::State::phase_t::COMPUTER_TURN,      game::State::phase_t::COMPUTER_ANIMATION},
         {game::State::phase_t::COMPUTER_ANIMATION, game::State::phase_t::PLAYER_TURN},
@@ -23,6 +24,10 @@ State::phase_t State::proceed() {
 
     return phase;
 }
+
+void State::set_phase(phase_t _phase) {
+    phase = _phase;
+};
 
 State::phase_t State::get_phase() const {
     return phase;

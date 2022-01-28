@@ -13,6 +13,7 @@ class State {
     public:
         enum class phase_t {
             PLAYER_TURN,
+            CHARACTER_SELECTED,
             PLAYER_ANIMATION,
             COMPUTER_TURN,
             COMPUTER_ANIMATION,
@@ -26,6 +27,8 @@ class State {
         ~State();
 
         phase_t proceed();
+
+        void set_phase(phase_t _phase);
 
         phase_t get_phase() const;
 };

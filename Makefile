@@ -1,11 +1,14 @@
+ifdef devmode
+	dev_options=-DANG_MORE_WARNINGS=ON -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+endif
+
 all: build_debug
 
 cmake_build:
 	mkdir cmake_build
 
 refresh_release: cmake_build
-	cd cmake_build; cmake .. -DCMAKE_BUILD_TYPE=Release -DANG_MORE_WARNINGS=ON \
-	 -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+	cd cmake_build; cmake .. -DCMAKE_BUILD_TYPE=Release $(dev_options)
 
 refresh_debug: cmake_build
 	cd cmake_build; cmake .. -DCMAKE_BUILD_TYPE=Debug -DANG_MORE_WARNINGS=ON \

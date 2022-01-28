@@ -16,10 +16,10 @@ class Field {
             PLAYER,
             COMPUTER,
         };
-
-    private:
         static constexpr unsigned ROWS_COUNT = 8;
         static constexpr unsigned COLS_COUNT = 8;
+
+    private:
         static constexpr cell_t CELLS_INITIAL[ROWS_COUNT][COLS_COUNT] = {
             {cell_t::PLAYER, cell_t::PLAYER, cell_t::PLAYER, cell_t::EMPTY, cell_t::EMPTY, cell_t::EMPTY,    cell_t::EMPTY,    cell_t::EMPTY},
             {cell_t::PLAYER, cell_t::PLAYER, cell_t::PLAYER, cell_t::EMPTY, cell_t::EMPTY, cell_t::EMPTY,    cell_t::EMPTY,    cell_t::EMPTY},
@@ -38,11 +38,17 @@ class Field {
         ~Field();
 
         void set_cell(unsigned row, unsigned col, cell_t value);
-        void unsset_cell(unsigned row, unsigned col);
+        void unset_cell(unsigned row, unsigned col);
 
-        unsigned get_rows_count();
-        unsigned get_cols_count();
-        cell_t get_cell(unsigned row, unsigned col);
+        bool can_move(cell_t required_cell_type, unsigned row, unsigned col) const;
+        unsigned get_rows_count() const;
+        unsigned get_cols_count() const;
+        bool is_available(unsigned row, unsigned col) const;
+        bool is_empty(unsigned row, unsigned col) const;
+        bool is_player(unsigned row, unsigned col) const;
+        bool is_computer(unsigned row, unsigned col) const;
+        bool is_adjacents(unsigned row1, unsigned col1, unsigned row2, unsigned col2) const;
+        cell_t get_cell(unsigned row, unsigned col) const;
 };
 
 } // game::
