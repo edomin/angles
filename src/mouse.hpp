@@ -34,6 +34,15 @@ class Mouse {
         bool button_down(button_t button);
         bool button_up(button_t button);
         bool button_hold(button_t button);
+        bool left_button_down();
+        bool left_button_up();
+        bool left_button_hold();
+        bool right_button_down();
+        bool right_button_up();
+        bool right_button_hold();
+        bool middle_button_down();
+        bool middle_button_up();
+        bool middle_button_hold();
 };
 
 #endif // MOUSE_HPP

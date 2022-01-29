@@ -37,12 +37,12 @@ class Game {
         std::unordered_map<game::State::phase_t, update_phase_func_t> update_phase_funcs;
         std::unordered_map<game::State::phase_t, render_phase_func_t> render_phase_funcs;
 
-        std::tuple<
-            bool,  // left mouse button press
-            bool,  // right mouse button press
-            float, // mouse x
-            float  // mouse y
-        > mouse_state;
+        // std::tuple<
+        //     bool,  // left mouse button press
+        //     bool,  // right mouse button press
+        //     float, // mouse x
+        //     float  // mouse y
+        // > mouse_state;
 
         std::tuple<
             unsigned, // row

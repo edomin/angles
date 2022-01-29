@@ -41,6 +41,9 @@ namespace {
     const float MOUSE_SCALE_FACTOR = 4.0f;
     const float MOVE_SPEED = 1.0f;
 
+    const float TEXT_X = 32.0f * CANVAS_SCALE_FACTOR;
+    const float TEXT_Y = 48.0f * CANVAS_SCALE_FACTOR
+
     // Converts cell row index to y or col index to x
     inline float cell_to_canvas_coord(unsigned index) {
         return index * CELL_SIDE * CANVAS_SCALE_FACTOR;
@@ -73,9 +76,6 @@ Game::Game(const App &_app, Window &_window, Draw &_draw)
 , cell_sprite()
 , update_phase_funcs()
 , render_phase_funcs()
-// , mouse_x(0.0f)
-// , mouse_y(0.0f)
-, mouse_state({false, false, 0.0f, 0.0f})
 , selected_cell({0, 0})
 , delta_time(timer.update())
 , move({0.0f, 0.0f, 0.0f, 0.0f})
@@ -111,11 +111,9 @@ Game::~Game() {
 }
 
 void Game::update_phase_player_turn() {
-    auto [lmb_press, _, mouse_x, mouse_y] = mouse_state;
-
-    if (lmb_press) {
-        unsigned row = mouse_coord_to_cell(mouse_y);
-        unsigned col = mouse_coord_to_cell(mouse_x);
+    if (mouse.left_button_down()) {
+        unsigned row = mouse_coord_to_cell(mouse.get_cursor_pos().y);
+        unsigned col = mouse_coord_to_cell(mouse.get_cursor_pos().x);
 
         if (field.can_move(Field::cell_t::PLAYER, row, col)) {
             selected_cell = {row, col};
@@ -125,17 +123,15 @@ void Game::update_phase_player_turn() {
 }
 
 void Game::update_phase_character_selected() {
-    auto [lmb_press, rmb_press, mouse_x, mouse_y] = mouse_state;
-
-    if (rmb_press) {
+    if (mouse.right_button_down()) {
         state.set_phase(State::phase_t::PLAYER_TURN);
 
         return;
     }
 
-    if (lmb_press) {
-        unsigned mouse_row = mouse_coord_to_cell(mouse_y);
-        unsigned mouse_col = mouse_coord_to_cell(mouse_x);
+    if (mouse.left_button_down()) {
+        unsigned mouse_row = mouse_coord_to_cell(mouse.get_cursor_pos().y);
+        unsigned mouse_col = mouse_coord_to_cell(mouse.get_cursor_pos().x);
         auto     [selected_row, selected_col] = selected_cell;
         bool     adjacents = field.is_adjacents(selected_row, selected_col,
          mouse_row, mouse_col);
@@ -204,15 +200,12 @@ void Game::render_white_frames() {
 }
 
 void Game::render_phase_player_turn() {
-    float    mouse_x;
-    float    mouse_y;
     unsigned row;
     unsigned col;
     Sprite  *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
 
-    std::tie(std::ignore, std::ignore, mouse_x, mouse_y) = mouse_state;
-    row = mouse_coord_to_cell(mouse_y);
-    col = mouse_coord_to_cell(mouse_x);
+    row = mouse_coord_to_cell(mouse.get_cursor_pos().y);
+    col = mouse_coord_to_cell(mouse.get_cursor_pos().x);
 
     if (field.can_move(Field::cell_t::PLAYER, row, col))
         draw->put_sprite(*spr_yellow_frame, cell_to_canvas_coord(col),
@@ -235,15 +228,12 @@ void Game::render_possible_direction(unsigned row, unsigned col,
 void Game::render_phase_character_selected() {
     unsigned mouse_row;
     unsigned mouse_col;
-    float    mouse_x;
-    float    mouse_y;
     auto    [selected_row, selected_col] = selected_cell;
     Sprite  *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
     Sprite  *spr_green_frame = resources.get_sprite("green_frame"s);
 
-    std::tie(std::ignore, std::ignore, mouse_x, mouse_y) = mouse_state;
-    mouse_row = mouse_coord_to_cell(mouse_y);
-    mouse_col = mouse_coord_to_cell(mouse_x);
+    mouse_row = mouse_coord_to_cell(mouse.get_cursor_pos().y);
+    mouse_col = mouse_coord_to_cell(mouse.get_cursor_pos().x);
 
     draw->put_sprite(*spr_yellow_frame, cell_to_canvas_coord(selected_col),
      cell_to_canvas_coord(selected_row), FRAMES_Z, CANVAS_SCALE_FACTOR);
@@ -312,11 +302,11 @@ void Game::render() {
     render_phase();
     if (is_victory()) {
         Sprite *spr_msg = resources.get_sprite("win"s);
-        draw->put_sprite(*spr_msg, 32.0f * CANVAS_SCALE_FACTOR, 48.0f * CANVAS_SCALE_FACTOR, TEXT_Z, CANVAS_SCALE_FACTOR);
+        draw->put_sprite(*spr_msg, TEXT_X, TEXT_Y, TEXT_Z, CANVAS_SCALE_FACTOR);
     }
     if (is_defeat()) {
         Sprite *spr_msg = resources.get_sprite("fail"s);
-        draw->put_sprite(*spr_msg, 32.0f * CANVAS_SCALE_FACTOR, 48.0f * CANVAS_SCALE_FACTOR, TEXT_Z, CANVAS_SCALE_FACTOR);
+        draw->put_sprite(*spr_msg, TEXT_X, TEXT_Y, TEXT_Z, CANVAS_SCALE_FACTOR);
     }
 
 
@@ -325,9 +315,6 @@ void Game::render() {
 
 void Game::mainloop() {
     while (!window->should_close()) {
-        float mouse_x;
-        float mouse_y;
-
         update();
         render();
 
@@ -337,16 +324,7 @@ void Game::mainloop() {
         if (keyboard.key_down(KEY_QUIT))
             window->request_close();
 
-        std::tie(mouse_x, mouse_y) = mouse.get_cursor_pos().get_coords();
-        mouse_state = {
-            mouse.button_down(Mouse::button_t::LEFT),
-            mouse.button_down(Mouse::button_t::RIGHT),
-            mouse_x,
-            mouse_y,
-        };
-
         delta_time = timer.update();
-        // std::cout << delta_time << std::endl;
     }
 }
 

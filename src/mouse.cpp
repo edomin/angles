@@ -57,3 +57,39 @@ bool Mouse::button_up(button_t button) {
 bool Mouse::button_hold(button_t button) {
     return button_state[button];
 }
+
+bool Mouse::left_button_down() {
+    return button_down(button_t::LEFT);
+}
+
+bool Mouse::left_button_up() {
+    return button_up(button_t::LEFT);
+}
+
+bool Mouse::left_button_hold() {
+    return button_hold(button_t::LEFT);
+}
+
+bool Mouse::right_button_down() {
+    return button_down(button_t::RIGHT);
+}
+
+bool Mouse::right_button_up() {
+    return button_up(button_t::RIGHT);
+}
+
+bool Mouse::right_button_hold() {
+    return button_hold(button_t::RIGHT);
+}
+
+bool Mouse::middle_button_down() {
+    return button_down(button_t::MIDDLE);
+}
+
+bool Mouse::middle_button_up() {
+    return button_up(button_t::MIDDLE);
+}
+
+bool Mouse::middle_button_hold() {
+    return button_hold(button_t::MIDDLE);
+}
