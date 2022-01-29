@@ -20,23 +20,40 @@ Mouse::~Mouse() {
 
 }
 
-std::tuple<float, float> Mouse::get_cursor_pos() {
+void Mouse::update() {
+    int glfw_button_left = static_cast<std::underlying_type_t<button_t>>(
+     button_t::LEFT);
+    int glfw_button_right = static_cast<std::underlying_type_t<button_t>>(
+     button_t::RIGHT);
+    int glfw_button_middle = static_cast<std::underlying_type_t<button_t>>(
+     button_t::MIDDLE);
+    int glfw_left_state = glfwGetMouseButton(glfw_window, glfw_button_left);
+    int glfw_right_state = glfwGetMouseButton(glfw_window, glfw_button_right);
+    int glfw_middle_state = glfwGetMouseButton(glfw_window, glfw_button_middle);
+
+    prev_button_state = button_state;
+    button_state[button_t::LEFT] = glfw_left_state == GLFW_PRESS;
+    button_state[button_t::RIGHT] = glfw_right_state == GLFW_PRESS;
+    button_state[button_t::MIDDLE] = glfw_middle_state == GLFW_PRESS;
+}
+
+Vec2 Mouse::get_cursor_pos() {
     double mouse_x;
     double mouse_y;
 
     glfwGetCursorPos(glfw_window, &mouse_x, &mouse_y);
 
-    return {mouse_x, mouse_y};
+    return Vec2{static_cast<float>(mouse_x), static_cast<float>(mouse_y)};
 }
 
 bool Mouse::button_down(button_t button) {
-    int glfw_button = static_cast<std::underlying_type_t<button_t>>(button);
-
-    return glfwGetMouseButton(glfw_window, glfw_button) == GLFW_PRESS;
+    return button_state[button] && !prev_button_state[button];
 }
 
 bool Mouse::button_up(button_t button) {
-    int glfw_button = static_cast<std::underlying_type_t<button_t>>(button);
+    return !button_state[button] && prev_button_state[button];
+}
 
-    return glfwGetMouseButton(glfw_window, glfw_button) == GLFW_RELEASE;
+bool Mouse::button_hold(button_t button) {
+    return button_state[button];
 }

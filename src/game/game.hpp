@@ -44,9 +44,6 @@ class Game {
             float  // mouse y
         > mouse_state;
 
-        // float mouse_x;
-        // float mouse_y;
-
         std::tuple<
             unsigned, // row
             unsigned  // col

@@ -46,7 +46,6 @@ list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/game/field.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/game.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/state.cpp"
-    "${CMAKE_SOURCE_DIR}/src/game/vec2.cpp"
     "${CMAKE_SOURCE_DIR}/src/iimg.cpp"
     "${CMAKE_SOURCE_DIR}/src/img_characters.cpp"
     "${CMAKE_SOURCE_DIR}/src/img_floor.cpp"
@@ -64,6 +63,7 @@ list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/timer.cpp"
     "${CMAKE_SOURCE_DIR}/src/vao.cpp"
     "${CMAKE_SOURCE_DIR}/src/vbo.cpp"
+    "${CMAKE_SOURCE_DIR}/src/vec2.cpp"
     "${CMAKE_SOURCE_DIR}/src/vertex_attribute_array.cpp"
     "${CMAKE_SOURCE_DIR}/src/window.cpp"
 )

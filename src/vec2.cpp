@@ -1,6 +1,4 @@
-#include "game/vec2.hpp"
-
-namespace game {
+#include "vec2.hpp"
 
 Vec2::Vec2(float _x, float _y)
 : x(_x)
@@ -25,4 +23,6 @@ Vec2 Vec2::operator-(const Vec2 &rhs) {
     return Vec2{x - rhs.x, y - rhs.y};
 }
 
-} // game::
+std::tuple<float, float> Vec2::get_coords() {
+    return {x, y};
+}

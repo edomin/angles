@@ -1,22 +1,21 @@
-#ifndef GAME_VEC2_HPP
-#define GAME_VEC2_HPP
+#ifndef VEC2_HPP
+#define VEC2_HPP
 
-namespace game {
+#include <tuple>
 
 class Vec2 {
-    private:
+    public:
         float x;
         float y;
 
-    public:
         Vec2(float _x, float _y);
         Vec2(const Vec2 &other);
         ~Vec2();
 
         Vec2& operator=(const Vec2 &other);
         Vec2 operator-(const Vec2 &rhs);
+
+        std::tuple<float, float> get_coords();
 };
 
-} // game::
-
-#endif // GAME_VEC2_HPP
+#endif // VEC2_HPP

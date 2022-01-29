@@ -9,8 +9,6 @@
     #include <GLFW/glfw3.h>
 #endif
 
-#include "game/vec2.hpp"
-
 using namespace std::string_literals;
 
 namespace {
@@ -334,11 +332,12 @@ void Game::mainloop() {
         render();
 
         app->update();
+        mouse.update();
 
         if (keyboard.key_down(KEY_QUIT))
             window->request_close();
 
-        std::tie(mouse_x, mouse_y) = mouse.get_cursor_pos();
+        std::tie(mouse_x, mouse_y) = mouse.get_cursor_pos().get_coords();
         mouse_state = {
             mouse.button_down(Mouse::button_t::LEFT),
             mouse.button_down(Mouse::button_t::RIGHT),
