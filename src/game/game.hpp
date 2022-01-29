@@ -1,7 +1,7 @@
 #ifndef GAME_GAME_HPP
 #define GAME_GAME_HPP
 
-#include <unordered_map>
+#include <map>
 
 #include "app.hpp"
 #include "draw.hpp"
@@ -32,17 +32,10 @@ class Game {
         Field      field;
         Ai         ai;
 
-        std::unordered_map<Field::cell_t, Sprite *> cell_sprite;
+        std::map<Field::content_t, Sprite *> field_content_sprites;
 
-        std::unordered_map<game::State::phase_t, update_phase_func_t> update_phase_funcs;
-        std::unordered_map<game::State::phase_t, render_phase_func_t> render_phase_funcs;
-
-        // std::tuple<
-        //     bool,  // left mouse button press
-        //     bool,  // right mouse button press
-        //     float, // mouse x
-        //     float  // mouse y
-        // > mouse_state;
+        std::map<game::State::phase_t, update_phase_func_t> update_phase_funcs;
+        std::map<game::State::phase_t, render_phase_func_t> render_phase_funcs;
 
         std::tuple<
             unsigned, // row

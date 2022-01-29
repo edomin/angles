@@ -184,7 +184,7 @@ void Ai::move() {
     for (size_t search_index = 0; search_index < SEARCHES_COUNT; search_index++) {
         for (size_t row = 0; row < Field::ROWS_COUNT; row++) {
             for (size_t col = 0; col < Field::COLS_COUNT; col++) {
-                if (field->can_move(Field::cell_t::COMPUTER, row, col) && searches[search_index][row][col] > max_value) {
+                if (field->can_move(Field::content_t::COMPUTER, row, col) && searches[search_index][row][col] > max_value) {
                     max_value = searches[search_index][row][col];
                     // if (field->is_available(row - 1, col))
                     //     max_value_up = searches[search_index][row - 1][col];
@@ -230,8 +230,8 @@ void Ai::move() {
         }
 
         if (choosen) {
-            field->unset_cell(max_value_row, max_value_col);
-            field->set_cell(next_row, next_col, Field::cell_t::COMPUTER);
+            field->unset_content(max_value_row, max_value_col);
+            field->set_content(next_row, next_col, Field::content_t::COMPUTER);
         } else {
             max_value = 0;
         }
@@ -241,7 +241,7 @@ void Ai::move() {
         // random move
         for (unsigned row = 0; row < field->get_rows_count(); row++) {
             for (unsigned col = 0; col < field->get_rows_count(); col++) {
-                if (field->can_move(Field::cell_t::COMPUTER, row, col)) {
+                if (field->can_move(Field::content_t::COMPUTER, row, col)) {
                     unsigned next_row;
                     unsigned next_col;
 
@@ -262,8 +262,8 @@ void Ai::move() {
                         next_col = col + 1;
                     }
 
-                    field->unset_cell(row, col);
-                    field->set_cell(next_row, next_col, Field::cell_t::COMPUTER);
+                    field->unset_content(row, col);
+                    field->set_content(next_row, next_col, Field::content_t::COMPUTER);
 
                     return;
                 }
@@ -273,10 +273,8 @@ void Ai::move() {
 }
 
 void Ai::process_turn() {
-    for (size_t i = 0; i < SEARCHES_COUNT; i++) {
-        // std::cout << "i: " << i << std::endl;
+    for (size_t i = 0; i < SEARCHES_COUNT; i++)
         search(i);
-    }
 
     move();
 

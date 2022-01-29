@@ -11,28 +11,26 @@
 namespace game {
 
 Field::Field()
-: cells() {
-    memcpy(cells, CELLS_INITIAL, sizeof(cell_t) * ROWS_COUNT * COLS_COUNT);
+: content() {
+    memcpy(content, CONTENT_INITIAL, sizeof(content_t) * ROWS_COUNT * COLS_COUNT);
 }
 
 Field::~Field() {}
 
-void Field::set_cell(unsigned row, unsigned col, cell_t value) {
-    cells[row][col] = value;
+void Field::set_content(unsigned row, unsigned col, content_t value) {
+    content[row][col] = value;
 }
 
-void Field::unset_cell(unsigned row, unsigned col) {
-    cells[row][col] = cell_t::EMPTY;
+void Field::unset_content(unsigned row, unsigned col) {
+    content[row][col] = content_t::EMPTY;
 }
 
-bool Field::can_move(cell_t required_cell_type, unsigned row, unsigned col) const {
+bool Field::can_move(content_t required_content, unsigned row, unsigned col) const {
     try {
-        if (get_cell(row, col) != required_cell_type)
+        if (get_content(row, col) != required_content)
             return false;
     }
-    catch (const Exception&) {
-
-    }
+    catch (const Exception&) {}
 
     return is_empty(row - 1, col) || is_empty(row + 1, col)
      || is_empty(row, col - 1) || is_empty(row, col + 1);
@@ -52,7 +50,7 @@ bool Field::is_available(unsigned row, unsigned col) const {
 
 bool Field::is_empty(unsigned row, unsigned col) const {
     try {
-        return get_cell(row, col) == cell_t::EMPTY;
+        return get_content(row, col) == content_t::EMPTY;
     }
     catch (const Exception&) {}
 
@@ -61,7 +59,7 @@ bool Field::is_empty(unsigned row, unsigned col) const {
 
 bool Field::is_player(unsigned row, unsigned col) const {
     try {
-        return get_cell(row, col) == cell_t::PLAYER;
+        return get_content(row, col) == content_t::PLAYER;
     }
     catch (const Exception&) {}
 
@@ -70,7 +68,7 @@ bool Field::is_player(unsigned row, unsigned col) const {
 
 bool Field::is_computer(unsigned row, unsigned col) const {
     try {
-        return get_cell(row, col) == cell_t::COMPUTER;
+        return get_content(row, col) == content_t::COMPUTER;
     }
     catch (const Exception&) {}
 
@@ -95,9 +93,9 @@ bool Field::is_adjacents(unsigned row1, unsigned col1, unsigned row2, unsigned c
     return adjacents;
 }
 
-Field::cell_t Field::get_cell(unsigned row, unsigned col) const {
+Field::content_t Field::get_content(unsigned row, unsigned col) const {
     if ((row < ROWS_COUNT) && (col < COLS_COUNT))
-        return cells[row][col];
+        return content[row][col];
 
     // I want to use std::format, by my gcc don't have <format> header
     std::stringstream msgss;
