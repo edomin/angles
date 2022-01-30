@@ -1,6 +1,8 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
 
+#include <iostream>
+
 #include <GL/glew.h>
 
 #include "exception.hpp"
