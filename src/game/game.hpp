@@ -6,6 +6,7 @@
 #include "app.hpp"
 #include "draw.hpp"
 #include "game/ai.hpp"
+#include "game/cell.hpp"
 #include "game/field.hpp"
 #include "game/state.hpp"
 #include "keyboard.hpp"
@@ -37,10 +38,12 @@ class Game {
         std::map<game::State::phase_t, update_phase_func_t> update_phase_funcs;
         std::map<game::State::phase_t, render_phase_func_t> render_phase_funcs;
 
-        std::tuple<
-            unsigned, // row
-            unsigned  // col
-        > selected_cell;
+        Cell selected_cell;
+
+        // std::tuple<
+        //     unsigned, // row
+        //     unsigned  // col
+        // > selected_cell;
 
         double delta_time;
 
@@ -62,9 +65,8 @@ class Game {
         void update_phase();
 
         void render_white_frames();
-        void render_possible_direction(unsigned row, unsigned col,
-         unsigned mouse_row, unsigned mouse_col, Sprite *spr_selected,
-         Sprite *spr_direction);
+        void render_possible_direction(const Cell &cell, const Cell &mouse_cell,
+         Sprite *spr_selected, Sprite *spr_direction);
 
         void render_phase_player_turn();
         void render_phase_character_selected();
