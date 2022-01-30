@@ -26,7 +26,10 @@ Ai::Ai(Field &_field)
     }
 }
 
-Ai::~Ai() {}
+Ai::~Ai() {
+    for (unsigned i = 0; i < SEARCHES_COUNT; i++)
+        delete searches[i];
+}
 
 unsigned Ai::get_cell_starting_value(const Cell &cell) {
     unsigned result = 0;
