@@ -32,6 +32,12 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL GNU OR CMAKE_CXX_COMPILER_ID STREQUAL Clang)
     ang_add_more_warnings(ANG_COMPILE_OPTIONS)
 endif()
 
+if (${CMAKE_SYSTEM_NAME} STREQUAL Windows)
+    find_package(CompilerRuntime REQUIRED)
+    find_package(CxxLibrary REQUIRED)
+    find_package(WinPthread REQUIRED)
+endif()
+set(GLEW_USE_STATIC_LIBS:BOOL TRUE)
 find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -85,10 +91,18 @@ set_target_properties(angles PROPERTIES
 target_compile_options(angles PRIVATE ${ANG_COMPILE_OPTIONS})
 
 target_link_libraries(angles PRIVATE
-    ${GLEW_LIBRARIES}
+    GLEW::glew_s
     ${GLFW3_LIBRARY}
     ${OPENGL_LIBRARIES}
 )
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL Windows)
+    target_link_libraries(angles PRIVATE
+        ${COMPILER_RUNTIME_LIBRARIES}
+        ${CXX_LIBRARY_LIBRARIES}
+        ${WINPTHREAD_LIBRARIES}
+    )
+endif()
 
 target_include_directories(angles PRIVATE
     "${CMAKE_SOURCE_DIR}/src"

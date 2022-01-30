@@ -3,14 +3,17 @@ Well, I incorrectly translated word "Уголки" to English. I believe correct
 name of this game is "Corners".
 
 # Prerequisites
- * C++ compiler:
-    * On Linux - GCC with C++20 support
+ * GCC with C++20 support
  * Cmake >=3.12
  * GLFW 3.x
  * GLEW
 
-# Building on Linux
-Manually:
+# Building
+Building on Linux only (I am sorry). But you can download built binaries for 
+Windows and Linux in "[releases](https://github.com/edomin/angles/releases)" 
+section of this repo.
+
+Manually for Linux:
 ```
 $ mkdir cmake_build
 $ cd cmake_build
@@ -19,9 +22,14 @@ $ make
 $ cd ..
 ```
 
-With shortcut:
+With shortcut for Linux:
 ```
 $ make build_release
+```
+
+With shortcut for Windows:
+```
+$ make build_release toolchain=x86_64-w64-mingw32
 ```
 
 # Controls
