@@ -126,40 +126,24 @@ void Ai::search(unsigned search_index) {
         must_stop = update_values(search, &value);
 }
 
-void Ai::debug_output() {
-    std::ios fmt(nullptr);
-
-    std::cout << "DEBUG: " << std::endl;
-
-    fmt.copyfmt(std::cout);
-    for (size_t search_index = 0; search_index < SEARCHES_COUNT; search_index++) {
-        std::cout << "search " << search_index << ":" << std::endl;
-
-        for (size_t row = 0; row < Field::ROWS_COUNT; row++) {
-            for (size_t col = 0; col < Field::COLS_COUNT; col++)
-                std::cout << std::setw(4) << searches[search_index]->at(row, col);
-            std::cout << std::endl;
-        }
-        std::cout.copyfmt(fmt);
-    }
-}
-
 std::tuple<Cell, Cell> Ai::move() {
     unsigned max_value = 0;
     unsigned max_value_search_index;
-    unsigned max_value_row;
-    unsigned max_value_col;
+    Cell     max_value_cell(0.0f, 0.0f);
+    // unsigned max_value_row;
+    // unsigned max_value_col;
     Cell result_pos(0.0f, 0.0f);
     Cell result_dst(0.0f, 0.0f);
 
     for (size_t search_index = 0; search_index < SEARCHES_COUNT; search_index++) {
         for (unsigned row = 0; row < Field::ROWS_COUNT; row++) {
             for (unsigned col = 0; col < Field::COLS_COUNT; col++) {
-                if (field->can_move(Field::content_t::COMPUTER, Cell{row, col}) && searches[search_index]->at(row, col) > max_value) {
-                    max_value = searches[search_index]->at(row, col);
+                Cell cell(row, col);
+
+                if (field->can_move(Field::content_t::COMPUTER, cell) && searches[search_index]->at(cell) > max_value) {
+                    max_value = searches[search_index]->at(cell);
                     max_value_search_index = search_index;
-                    max_value_row = row;
-                    max_value_col = col;
+                    max_value_cell = cell;
                 }
             }
         }
@@ -167,32 +151,27 @@ std::tuple<Cell, Cell> Ai::move() {
 
     if (max_value != 0) {
         unsigned next_value = 0;
-        unsigned next_row;
-        unsigned next_col;
-        bool choosen = false;
+        Cell     next_cell(0.0f, 0.0f);
+        bool     choosen = false;
 
-        if (field->is_empty(Cell{max_value_row - 1, max_value_col}) && searches[max_value_search_index]->at(max_value_row - 1, max_value_col) > next_value) {
-            next_row = max_value_row - 1;
-            next_col = max_value_col;
+        if (field->is_empty(max_value_cell.near_top()) && searches[max_value_search_index]->at(max_value_cell.near_top()) > next_value) {
+            next_cell = max_value_cell.near_top();
             choosen = true;
-        } else if (field->is_empty(Cell{max_value_row + 1, max_value_col}) && searches[max_value_search_index]->at(max_value_row + 1, max_value_col) > next_value) {
-            next_row = max_value_row + 1;
-            next_col = max_value_col;
+        } else if (field->is_empty(max_value_cell.near_bottom()) && searches[max_value_search_index]->at(max_value_cell.near_bottom()) > next_value) {
+            next_cell = max_value_cell.near_bottom();
             choosen = true;
-        } else if (field->is_empty(Cell{max_value_row, max_value_col - 1}) && searches[max_value_search_index]->at(max_value_row, max_value_col - 1) > next_value) {
-            next_row = max_value_row;
-            next_col = max_value_col - 1;
+        } else if (field->is_empty(max_value_cell.near_left()) && searches[max_value_search_index]->at(max_value_cell.near_left()) > next_value) {
+            next_cell = max_value_cell.near_left();
             choosen = true;
-        } else if (field->is_empty(Cell{max_value_row, max_value_col + 1}) && searches[max_value_search_index]->at(max_value_row, max_value_col + 1) > next_value) {
-            next_row = max_value_row;
-            next_col = max_value_col + 1;
+        } else if (field->is_empty(max_value_cell.near_right()) && searches[max_value_search_index]->at(max_value_cell.near_right()) > next_value) {
+            next_cell = max_value_cell.near_right();
             choosen = true;
         }
 
         if (choosen) {
-            field->unset_content(Cell{max_value_row, max_value_col});
-            result_pos = {max_value_row, max_value_col};
-            result_dst = {next_row, next_col};
+            // field->unset_content(max_value_cell);
+            result_pos = max_value_cell;
+            result_dst = next_cell;
         } else {
             max_value = 0;
         }
@@ -203,30 +182,22 @@ std::tuple<Cell, Cell> Ai::move() {
         for (unsigned row = 0; row < field->get_rows_count(); row++) {
             for (unsigned col = 0; col < field->get_rows_count(); col++) {
                 if (field->can_move(Field::content_t::COMPUTER, Cell{row, col})) {
-                    unsigned next_row;
-                    unsigned next_col;
+                    Cell cell(row, col);
+                    Cell next_cell(0.0f, 0.0f);
 
-                    if (field->is_empty(Cell{row - 1, col})) {
-                        next_row = row - 1;
-                        next_col = col;
-                    }
-                    if (field->is_empty(Cell{row + 1, col})) {
-                        next_row = row + 1;
-                        next_col = col;
-                    }
-                    if (field->is_empty(Cell{row, col - 1})) {
-                        next_row = row;
-                        next_col = col - 1;
-                    }
-                    if (field->is_empty(Cell{row, col + 1})) {
-                        next_row = row;
-                        next_col = col + 1;
-                    }
+                    if (field->is_empty(cell.near_top()))
+                        next_cell = cell.near_top();
+                    else if (field->is_empty(cell.near_bottom()))
+                        next_cell = cell.near_bottom();
+                    else if (field->is_empty(cell.near_left()))
+                        next_cell = cell.near_left();
+                    else if (field->is_empty(cell.near_right()))
+                        next_cell = cell.near_right();
 
-                    field->unset_content(Cell{row, col});
+                    // field->unset_content(Cell{row, col});
 
-                    result_pos = {row, col};
-                    result_dst = {next_row, next_col};
+                    result_pos = cell;
+                    result_dst = next_cell;
 
                     return {result_pos, result_dst};
                 }

@@ -193,6 +193,7 @@ void Game::update_phase_computer_turn() {
         cell_to_canvas_coords(start_cell),
         cell_to_canvas_coords(dst_cell)
     };
+    field.unset_content(start_cell);
 
     state.proceed();
 }
