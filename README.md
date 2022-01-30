@@ -30,8 +30,10 @@ Esc - Quit game
 
 # Copying
 Source code under CC0 
+Sprites of selected cells and game endings' text (files "gimp/frames.xcf" and 
+"gimp/text.xcf") are under CC0
 
-Graphics used in this game: 
+Third-party graphics used in this game: 
 
 * [Stone floor](https://opengameart.org/content/stone-floor-tiles) (CC0) 
 * [RPG Characters](https://opengameart.org/content/rpg-character-sprites) (CC0)
