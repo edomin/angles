@@ -42,16 +42,23 @@ class Game {
 
         double delta_time;
 
+        // std::tuple<
+        //     float, // x
+        //     float, // y
+        //     float, // dst_x
+        //     float  // dst_y
+        // > move;
         std::tuple<
-            float, // x
-            float, // y
-            float, // dst_x
-            float  // dst_y
+            Vec2, //pos
+            Vec2  //dst
         > move;
 
         bool victory;
         bool defeat;
 
+        Vec2 cell_to_canvas_coords(const Cell &cell);
+        Vec2 cell_to_canvas_coords(unsigned row, unsigned col);
+        Cell canvas_coords_to_cell(const Vec2 &coords);
         Cell mouse_coords_to_cell();
 
         void update_phase_player_turn();

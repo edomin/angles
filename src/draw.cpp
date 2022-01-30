@@ -177,11 +177,18 @@ void Draw::update_vertices_data() {
     batches_data.push_back(batch_data);
 }
 
-void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
- float hscale, float vscale) {
+// void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
+//  float hscale, float vscale) {
+//     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
+//         vscale = hscale;
+//     draw_queue.push_back({&sprite, x, y, z, hscale, vscale});
+// }
+
+void Draw::put_sprite(const Sprite &sprite, const Vec2 &pos, float z, float hscale,
+ float vscale) {
     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
         vscale = hscale;
-    draw_queue.push_back({&sprite, x, y, z, hscale, vscale});
+    draw_queue.push_back({&sprite, pos.x, pos.y, z, hscale, vscale});
 }
 
 void Draw::update() {

@@ -1,7 +1,6 @@
 #ifndef DRAW_HPP
 #define DRAW_HPP
 
-// #include <unordered_map>
 #include <memory>
 #include <tuple>
 #include <vector>
@@ -11,6 +10,7 @@
 
 #include "batch_data.hpp"
 #include "vbo.hpp"
+#include "vec2.hpp"
 #include "shader_program.hpp"
 #include "sprite.hpp"
 #include "vertex_attribute_array.hpp"
@@ -51,7 +51,9 @@ class Draw {
         ~Draw();
 
         // void fill(const Color &color);
-        void put_sprite(const Sprite &sprite, float x, float y, float z,
+        // void put_sprite(const Sprite &sprite, float x, float y, float z,
+        //  float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
+        void put_sprite(const Sprite &sprite, const Vec2 &pos, float z,
          float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
         void update();
 };
