@@ -178,7 +178,6 @@ void Game::update_phase_character_selected() {
 }
 
 void Game::update_phase_player_animation() {
-    auto [pos, dst] = move;
     // Vec2 pos(x, y);
     // Vec2 dst(dst_x, dst_y);
     // Vec2 new_pos(dst - pos);
@@ -190,7 +189,7 @@ void Game::update_phase_player_animation() {
     //
     // ...
 
-    field.set_content(canvas_coords_to_cell(dst), Field::content_t::PLAYER);
+    field.set_content(canvas_coords_to_cell(move.b), Field::content_t::PLAYER);
     victory = is_victory();
     state.proceed();
 }

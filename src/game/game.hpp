@@ -8,6 +8,7 @@
 #include "game/ai.hpp"
 #include "game/cell.hpp"
 #include "game/field.hpp"
+#include "game/line.hpp"
 #include "game/state.hpp"
 #include "keyboard.hpp"
 #include "mouse.hpp"
@@ -42,16 +43,7 @@ class Game {
 
         double delta_time;
 
-        // std::tuple<
-        //     float, // x
-        //     float, // y
-        //     float, // dst_x
-        //     float  // dst_y
-        // > move;
-        std::tuple<
-            Vec2, //pos
-            Vec2  //dst
-        > move;
+        Line move;
 
         bool victory;
         bool defeat;

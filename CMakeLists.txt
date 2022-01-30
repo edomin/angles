@@ -46,6 +46,7 @@ list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/game/cell.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/field.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/game.cpp"
+    "${CMAKE_SOURCE_DIR}/src/game/line.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/search.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/searching_cell_record.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/state.cpp"
