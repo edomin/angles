@@ -13,6 +13,8 @@ class Step {
         Step(const Cell &_start, const Cell &_dst);
         ~Step();
 
+        static Step create_idle();
+
         bool is_idle();
 };
 

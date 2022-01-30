@@ -150,7 +150,7 @@ Step Ai::random_move() {
         }
     }
 
-    return Step({0, 0}, {0, 0});
+    return Step::create_idle();
 }
 
 std::tuple<unsigned, unsigned, Cell> Ai::find_max_value_cell() {
@@ -178,7 +178,7 @@ std::tuple<unsigned, unsigned, Cell> Ai::find_max_value_cell() {
 }
 
 Step Ai::move() {
-    Step result({0, 0}, {0, 0});
+    Step result = Step::create_idle();
     auto [
         max_value,
         max_value_search_index,
@@ -212,7 +212,7 @@ Step Ai::move() {
     }
 
     if (max_value == 0)
-        random_move();
+        return random_move();
 
     return result;
 }
