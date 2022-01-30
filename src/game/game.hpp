@@ -20,33 +20,29 @@ namespace game {
 
 class Game {
     private:
-        typedef void (game::Game::*render_phase_func_t)();
         typedef void (game::Game::*update_phase_func_t)();
+        typedef void (game::Game::*render_phase_func_t)();
+        typedef std::map<game::State::phase_t, update_phase_func_t> update_phase_funcs_t;
+        typedef std::map<game::State::phase_t, render_phase_func_t> render_phase_funcs_t;
 
-        const App *app;
-        Window    *window;
-        Draw      *draw;
-        ResKeeper  resources;
-        Keyboard   keyboard;
-        Mouse      mouse;
-        Timer      timer;
-        State      state;
-        Field      field;
-        Ai         ai;
-
+        const App                           *app;
+        Window                              *window;
+        Draw                                *draw;
+        ResKeeper                            resources;
+        Keyboard                             keyboard;
+        Mouse                                mouse;
+        Timer                                timer;
+        State                                state;
+        Field                                field;
+        Ai                                   ai;
         std::map<Field::content_t, Sprite *> field_content_sprites;
-
-        std::map<game::State::phase_t, update_phase_func_t> update_phase_funcs;
-        std::map<game::State::phase_t, render_phase_func_t> render_phase_funcs;
-
-        Cell selected_cell;
-
-        double delta_time;
-
-        Line move;
-
-        bool victory;
-        bool defeat;
+        update_phase_funcs_t                 update_phase_funcs;
+        render_phase_funcs_t                 render_phase_funcs;
+        Cell                                 selected_cell;
+        double                               delta_time;
+        Line                                 move;
+        bool                                 victory;
+        bool                                 defeat;
 
         Vec2 cell_to_canvas_coords(const Cell &cell);
         Vec2 cell_to_canvas_coords(unsigned row, unsigned col);

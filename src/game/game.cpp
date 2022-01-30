@@ -187,15 +187,19 @@ void Game::update_phase_player_animation() {
 }
 
 void Game::update_phase_computer_turn() {
-    auto [start_cell, dst_cell] = ai.process_turn();
+    Step step = ai.process_turn();
 
-    move = {
-        cell_to_canvas_coords(start_cell),
-        cell_to_canvas_coords(dst_cell)
-    };
-    field.unset_content(start_cell);
+    if (step.is_idle()) {
+        state.set_phase(State::phase_t::PLAYER_TURN);
+    } else {
+        move = {
+            cell_to_canvas_coords(step.start),
+            cell_to_canvas_coords(step.dst)
+        };
+        field.unset_content(step.start);
 
-    state.proceed();
+        state.proceed();
+    }
 }
 
 void Game::update_phase_computer_animation() {

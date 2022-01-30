@@ -8,4 +8,8 @@ Step::Step(const Cell &_start, const Cell &_dst)
 
 Step::~Step() {}
 
+bool Step::is_idle() {
+    return start == dst;
+}
+
 } // game::

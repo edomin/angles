@@ -25,6 +25,9 @@ class Ai {
          unsigned value, const Cell &cell);
         bool update_values(Search *search, unsigned *value);
         void search(unsigned search_index);
+        Cell choose_empty_cell(const Cell &cell);
+        Step random_move();
+        std::tuple<unsigned, unsigned, Cell> find_max_value_cell();
         Step move();
 
     public:

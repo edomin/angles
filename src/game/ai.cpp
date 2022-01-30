@@ -126,11 +126,37 @@ void Ai::search(unsigned search_index) {
         must_stop = update_values(search, &value);
 }
 
-Step Ai::move() {
+Cell Ai::choose_empty_cell(const Cell &cell) {
+    if (!field->can_move(Field::content_t::COMPUTER, cell))
+        ANG_THROW("choose_empty_cell(): no empty cells");
+
+    if (field->is_empty(cell.near_top()))
+        return cell.near_top();
+    else if (field->is_empty(cell.near_bottom()))
+        return  cell.near_bottom();
+    else if (field->is_empty(cell.near_left()))
+        return  cell.near_left();
+
+    return cell.near_right();
+}
+
+Step Ai::random_move() {
+    for (unsigned row = 0; row < field->get_rows_count(); row++) {
+        for (unsigned col = 0; col < field->get_rows_count(); col++) {
+            Cell cell(row, col);
+
+            if (field->can_move(Field::content_t::COMPUTER, cell))
+                return {cell, choose_empty_cell(cell)};
+        }
+    }
+
+    return Step({0, 0}, {0, 0});
+}
+
+std::tuple<unsigned, unsigned, Cell> Ai::find_max_value_cell() {
     unsigned max_value = 0;
     unsigned max_value_search_index;
     Cell     max_value_cell(0, 0);
-    Step     result({0, 0}, {0, 0});
 
     for (size_t srch_index = 0; srch_index < SEARCHES_COUNT; srch_index++) {
         for (unsigned row = 0; row < Field::ROWS_COUNT; row++) {
@@ -147,6 +173,17 @@ Step Ai::move() {
             }
         }
     }
+
+    return {max_value, max_value_search_index, max_value_cell};
+}
+
+Step Ai::move() {
+    Step result({0, 0}, {0, 0});
+    auto [
+        max_value,
+        max_value_search_index,
+        max_value_cell
+    ] = find_max_value_cell();
 
     if (max_value != 0) {
         unsigned next_value = 0;
@@ -174,29 +211,8 @@ Step Ai::move() {
             max_value = 0;
     }
 
-    if (max_value == 0) {
-        // random move
-        for (unsigned row = 0; row < field->get_rows_count(); row++) {
-            for (unsigned col = 0; col < field->get_rows_count(); col++) {
-                Cell cell(row, col);
-
-                if (field->can_move(Field::content_t::COMPUTER, cell)) {
-                    Cell next_cell(0, 0);
-
-                    if (field->is_empty(cell.near_top()))
-                        next_cell = cell.near_top();
-                    else if (field->is_empty(cell.near_bottom()))
-                        next_cell = cell.near_bottom();
-                    else if (field->is_empty(cell.near_left()))
-                        next_cell = cell.near_left();
-                    else if (field->is_empty(cell.near_right()))
-                        next_cell = cell.near_right();
-
-                    return {cell, next_cell};
-                }
-            }
-        }
-    }
+    if (max_value == 0)
+        random_move();
 
     return result;
 }

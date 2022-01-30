@@ -12,6 +12,8 @@ class Step {
 
         Step(const Cell &_start, const Cell &_dst);
         ~Step();
+
+        bool is_idle();
 };
 
 } // game::
