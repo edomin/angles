@@ -44,6 +44,25 @@ namespace {
     const float TEXT_X = 32.0f * CANVAS_SCALE_FACTOR;
     const float TEXT_Y = 48.0f * CANVAS_SCALE_FACTOR;
 
+    const std::vector<game::Cell> player_victory_cells = {
+        {game::Field::ROWS_COUNT - 3, game::Field::COLS_COUNT - 3},
+        {game::Field::ROWS_COUNT - 3, game::Field::COLS_COUNT - 2},
+        {game::Field::ROWS_COUNT - 3, game::Field::COLS_COUNT - 1},
+
+        {game::Field::ROWS_COUNT - 2, game::Field::COLS_COUNT - 3},
+        {game::Field::ROWS_COUNT - 2, game::Field::COLS_COUNT - 2},
+        {game::Field::ROWS_COUNT - 2, game::Field::COLS_COUNT - 1},
+
+        {game::Field::ROWS_COUNT - 1, game::Field::COLS_COUNT - 3},
+        {game::Field::ROWS_COUNT - 1, game::Field::COLS_COUNT - 2},
+        {game::Field::ROWS_COUNT - 1, game::Field::COLS_COUNT - 1},
+    };
+    const std::vector<game::Cell> computer_victory_cells = {
+        {0, 0}, {0, 1}, {0, 2},
+        {1, 0}, {1, 1}, {1, 2},
+        {2, 0}, {2, 1}, {2, 2},
+    };
+
     // Converts cell row index to y or col index to x
     inline float cell_to_canvas_coord(unsigned index) {
         return index * CELL_SIDE * CANVAS_SCALE_FACTOR;
@@ -139,10 +158,7 @@ void Game::update_phase_character_selected() {
     if (mouse.left_button_down()) {
         Cell mouse_cell = mouse_coords_to_cell(mouse.get_cursor_pos().x,
          mouse.get_cursor_pos().y);
-        // unsigned mouse_row = mouse_coord_to_cell(mouse.get_cursor_pos().y);
-        // unsigned mouse_col = mouse_coord_to_cell(mouse.get_cursor_pos().x);
-        // auto     [selected_row, selected_col] = selected_cell;
-        bool     adjacents = field.is_adjacents(selected_cell, mouse_cell);
+        bool adjacents = field.is_adjacents(selected_cell, mouse_cell);
 
         if (field.is_empty(mouse_cell) && adjacents) {
             move = {
@@ -191,9 +207,9 @@ void Game::update_phase() {
 }
 
 void Game::render_white_frames() {
-    Sprite *spr_white_frame = resources.get_sprite("white_frame"s);
-    unsigned          rows_count = field.get_rows_count();
-    unsigned          cols_count = field.get_cols_count();
+    Sprite  *spr_white_frame = resources.get_sprite("white_frame"s);
+    unsigned rows_count = field.get_rows_count();
+    unsigned cols_count = field.get_cols_count();
 
     for (unsigned row = 0; row < 3; row++) {
         for (unsigned col = 0; col < 3; col++)
@@ -208,10 +224,8 @@ void Game::render_white_frames() {
 }
 
 void Game::render_phase_player_turn() {
-    // unsigned row;
-    // unsigned col;
-    Cell     cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
-    Sprite  *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
+    Cell    cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
+    Sprite *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
 
     if (field.can_move(Field::content_t::PLAYER, cell))
         draw->put_sprite(*spr_yellow_frame, cell_to_canvas_coord(cell.col),
@@ -231,10 +245,9 @@ void Game::render_possible_direction(const Cell &cell, const Cell &mouse_cell,
 }
 
 void Game::render_phase_character_selected() {
-    Cell    mouse_cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
-    // auto    [selected_row, selected_col] = selected_cell;
-    Sprite  *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
-    Sprite  *spr_green_frame = resources.get_sprite("green_frame"s);
+    Cell   mouse_cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
+    Sprite *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
+    Sprite *spr_green_frame = resources.get_sprite("green_frame"s);
 
     draw->put_sprite(*spr_yellow_frame, cell_to_canvas_coord(selected_cell.col),
      cell_to_canvas_coord(selected_cell.row), FRAMES_Z, CANVAS_SCALE_FACTOR);
@@ -269,16 +282,31 @@ void Game::update() {
     update_phase();
 }
 
+bool Game::is_side_wins(bool side_victory, bool side_defeat,
+ const std::vector<Cell> &victory_cells, Field::content_t req_content) {
+    bool new_side_victory = true;
+
+    if (side_victory)
+        return true;
+
+    if (side_defeat)
+        return false;
+
+    for (size_t i = 0; i < victory_cells.size() && new_side_victory; i++)
+        new_side_victory = new_side_victory
+         && (field.get_content(victory_cells[i]) == req_content);
+
+    return new_side_victory;
+}
+
 bool Game::is_victory() {
-    return victory || (field.is_player(Cell{5, 5}) && field.is_player(Cell{5, 6}) && field.is_player(Cell{5, 7})
-     && field.is_player(Cell{6, 5}) && field.is_player(Cell{6, 6}) && field.is_player(Cell{6, 7})
-     && field.is_player(Cell{7, 5}) && field.is_player(Cell{7, 6}) && field.is_player(Cell{7, 7})  && !defeat);
+    return is_side_wins(victory, defeat, player_victory_cells,
+     Field::content_t::PLAYER);
 }
 
 bool Game::is_defeat() {
-    return defeat || (field.is_computer(Cell{0, 0}) && field.is_computer(Cell{0, 1}) && field.is_computer(Cell{0, 2})
-     && field.is_computer(Cell{1, 0}) && field.is_computer(Cell{1, 1}) && field.is_computer(Cell{1, 2})
-     && field.is_computer(Cell{2, 0}) && field.is_computer(Cell{2, 1}) && field.is_computer(Cell{2, 2}) && !victory);
+    return is_side_wins(defeat, victory, computer_victory_cells,
+     Field::content_t::COMPUTER);
 }
 
 void Game::render() {

@@ -75,6 +75,8 @@ class Game {
         void render_phase_computer_animation();
         void render_phase();
 
+        bool is_side_wins(bool side_victory, bool side_defeat,
+         const std::vector<Cell> &victory_cells, Field::content_t req_content);
         bool is_victory();
         bool is_defeat();
 
