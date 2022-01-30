@@ -40,7 +40,7 @@ namespace {
     // ретро-стиль :-)
     const float CANVAS_SCALE_FACTOR = 8.0f;
     const float MOUSE_SCALE_FACTOR = 4.0f;
-    const float MOVE_SPEED = 1.0f;
+    const float MOVE_SPEED = 750.0f;
 
     const Vec2  TEXT_POS = {
         32.0f * CANVAS_SCALE_FACTOR,
@@ -178,30 +178,32 @@ void Game::update_phase_character_selected() {
 }
 
 void Game::update_phase_player_animation() {
-    // Vec2 pos(x, y);
-    // Vec2 dst(dst_x, dst_y);
-    // Vec2 new_pos(dst - pos);
-
-    // ...
-    //
-    // Здесь планировалось сделать плавную анимацию передвижения, но у меня
-    // времени не хватило
-    //
-    // ...
-
-    field.set_content(canvas_coords_to_cell(move.b), Field::content_t::PLAYER);
-    victory = is_victory();
-    state.proceed();
+    if (move.shrink_to_b(MOVE_SPEED * delta_time)) {
+        field.set_content(canvas_coords_to_cell(move.b),
+         Field::content_t::PLAYER);
+        victory = is_victory();
+        state.proceed();
+    }
 }
 
 void Game::update_phase_computer_turn() {
-    ai.process_turn();
+    auto [start_cell, dst_cell] = ai.process_turn();
+
+    move = {
+        cell_to_canvas_coords(start_cell),
+        cell_to_canvas_coords(dst_cell)
+    };
+
     state.proceed();
 }
 
 void Game::update_phase_computer_animation() {
-    defeat = is_defeat();
-    state.proceed();
+    if (move.shrink_to_b(MOVE_SPEED * delta_time)) {
+        field.set_content(canvas_coords_to_cell(move.b),
+         Field::content_t::COMPUTER);
+        defeat = is_defeat();
+        state.proceed();
+    }
 }
 
 void Game::update_phase() {
@@ -209,7 +211,7 @@ void Game::update_phase() {
 }
 
 void Game::render_white_frames() {
-    Sprite  *spr_white_frame = resources.get_sprite("white_frame"s);
+    Sprite *spr_white_frame = resources.get_sprite("white_frame"s);
 
     // player_victory_cells.size() == computer_victory_cells.size()
     for (unsigned i = 0; i < player_victory_cells.size(); i++) {
@@ -262,7 +264,9 @@ void Game::render_phase_character_selected() {
 }
 
 void Game::render_phase_player_animation() {
+    Sprite *spr_boy = resources.get_sprite("boy"s);
 
+    draw->put_sprite(*spr_boy, move.a, CHARACTERS_Z, CANVAS_SCALE_FACTOR);
 }
 
 void Game::render_phase_computer_turn() {
@@ -270,7 +274,9 @@ void Game::render_phase_computer_turn() {
 }
 
 void Game::render_phase_computer_animation() {
+    Sprite *spr_girl = resources.get_sprite("girl"s);
 
+    draw->put_sprite(*spr_girl, move.a, CHARACTERS_Z, CANVAS_SCALE_FACTOR);
 }
 
 void Game::render_phase() {

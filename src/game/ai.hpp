@@ -2,6 +2,7 @@
 #define GAME_AI_HPP
 
 #include <vector>
+#include <tuple>
 #include <unordered_map>
 
 #include "game/cell.hpp"
@@ -26,7 +27,7 @@ class Ai {
          unsigned value, const Cell &cell);
         bool update_values(Search *search, unsigned *value);
         void search(unsigned search_index);
-        void move();
+        std::tuple<Cell, Cell> move();
 
         void debug_output();
 
@@ -34,7 +35,7 @@ class Ai {
         Ai(Field &_field);
         ~Ai();
 
-        void process_turn();
+        std::tuple<Cell, Cell> process_turn();
 };
 
 } // game::

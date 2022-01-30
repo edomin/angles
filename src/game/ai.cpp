@@ -144,11 +144,13 @@ void Ai::debug_output() {
     }
 }
 
-void Ai::move() {
+std::tuple<Cell, Cell> Ai::move() {
     unsigned max_value = 0;
     unsigned max_value_search_index;
     unsigned max_value_row;
     unsigned max_value_col;
+    Cell result_pos(0.0f, 0.0f);
+    Cell result_dst(0.0f, 0.0f);
 
     for (size_t search_index = 0; search_index < SEARCHES_COUNT; search_index++) {
         for (unsigned row = 0; row < Field::ROWS_COUNT; row++) {
@@ -189,7 +191,8 @@ void Ai::move() {
 
         if (choosen) {
             field->unset_content(Cell{max_value_row, max_value_col});
-            field->set_content(Cell{next_row, next_col}, Field::content_t::COMPUTER);
+            result_pos = {max_value_row, max_value_col};
+            result_dst = {next_row, next_col};
         } else {
             max_value = 0;
         }
@@ -221,22 +224,26 @@ void Ai::move() {
                     }
 
                     field->unset_content(Cell{row, col});
-                    field->set_content(Cell{next_row, next_col}, Field::content_t::COMPUTER);
 
-                    return;
+                    result_pos = {row, col};
+                    result_dst = {next_row, next_col};
+
+                    return {result_pos, result_dst};
                 }
             }
         }
     }
+
+    return {result_pos, result_dst};
 }
 
-void Ai::process_turn() {
+std::tuple<Cell, Cell> Ai::process_turn() {
     for (size_t i = 0; i < SEARCHES_COUNT; i++)
         search(i);
 
-    move();
+    return move();
 
-    debug_output();
+    // debug_output();
 }
 
 } // game::

@@ -14,6 +14,8 @@ class Line {
         ~Line();
 
         Line& operator=(const Line &other);
+
+        bool shrink_to_b(float len);
 };
 
 } // game::
