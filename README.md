@@ -3,12 +3,13 @@ Well, I incorrectly translated word "Уголки" to English. I believe correct
 name of this game is "Corners".
 
 # Prerequisites
- * GCC with C++20 support
+ * C++ compiler:
+    * On Linux - GCC with C++20 support
  * Cmake >=3.12
  * GLFW 3.x
  * GLEW
 
-# Building
+# Building on Linux
 Manually:
 ```
 $ mkdir cmake_build
