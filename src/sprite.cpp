@@ -29,38 +29,38 @@ Sprite::Sprite(const Spritesheet &_spritesheet, unsigned clip_index)
 
 Sprite::~Sprite() {}
 
-const Spritesheet *Sprite::get_spritesheet() const {
+[[gnu::pure]] const Spritesheet *Sprite::get_spritesheet() const {
     return spritesheet;
 }
 
-float Sprite::get_upper_left_u() const {
+[[gnu::pure]] float Sprite::get_upper_left_u() const {
     return upper_left_u;
 }
 
-float Sprite::get_upper_left_v() const {
+[[gnu::pure]] float Sprite::get_upper_left_v() const {
     return upper_left_v;
 }
 
-float Sprite::get_upper_right_u() const {
+[[gnu::pure]] float Sprite::get_upper_right_u() const {
     return upper_right_u;
 }
 
-float Sprite::get_upper_right_v() const {
+[[gnu::pure]] float Sprite::get_upper_right_v() const {
     return upper_right_v;
 }
 
-float Sprite::get_lower_left_u() const {
+[[gnu::pure]] float Sprite::get_lower_left_u() const {
     return lower_left_u;
 }
 
-float Sprite::get_lower_left_v() const {
+[[gnu::pure]] float Sprite::get_lower_left_v() const {
     return lower_left_v;
 }
 
-float Sprite::get_lower_right_u() const {
+[[gnu::pure]] float Sprite::get_lower_right_u() const {
     return lower_right_u;
 }
 
-float Sprite::get_lower_right_v() const {
+[[gnu::pure]] float Sprite::get_lower_right_v() const {
     return lower_right_v;
 }

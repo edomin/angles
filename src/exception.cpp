@@ -15,6 +15,6 @@ Exception::Exception(const char *_file, int _line, const char *_func,
     errortext.append(sstream.str());
 }
 
-const char *Exception::what() const noexcept {
+[[gnu::pure]] const char *Exception::what() const noexcept {
     return errortext.c_str();
 }

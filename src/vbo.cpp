@@ -42,6 +42,6 @@ void Vbo::set_vertices(void *vertices, size_t size) {
     }
 }
 
-size_t Vbo::get_components_per_vertex() const {
+[[gnu::pure]] size_t Vbo::get_components_per_vertex() const {
     return components_per_vertex;
 }

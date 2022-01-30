@@ -20,7 +20,7 @@ Spritesheet::Spritesheet(const Texture &_texture, unsigned _clip_width,
 
 Spritesheet::~Spritesheet() {}
 
-const Texture *Spritesheet::get_texture() const {
+[[gnu::pure]] const Texture *Spritesheet::get_texture() const {
     return texture;
 }
 
@@ -32,10 +32,10 @@ unsigned Spritesheet::get_clip_y(unsigned clip_index) const {
     return clip_coords.at(clip_index).second;
 }
 
-unsigned Spritesheet::get_clip_width() const {
+[[gnu::pure]] unsigned Spritesheet::get_clip_width() const {
     return clip_width;
 }
 
-unsigned Spritesheet::get_clip_height() const {
+[[gnu::pure]] unsigned Spritesheet::get_clip_height() const {
     return clip_height;
 }

@@ -35,10 +35,10 @@ void Texture::bind() const {
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-unsigned Texture::get_width() const {
+[[gnu::pure]] unsigned Texture::get_width() const {
     return width;
 }
 
-unsigned Texture::get_height() const {
+[[gnu::pure]] unsigned Texture::get_height() const {
     return height;
 }

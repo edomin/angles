@@ -19,7 +19,7 @@ Search& Search::operator=(const Search &other) {
     return *this;
 }
 
-bool Search::operator==(const Search &other) const {
+[[gnu::pure]] bool Search::operator==(const Search &other) const {
     bool width_equals = width == other.width;
     bool height_equals = height == other.height;
     bool data_equals = data == other.data;
@@ -36,11 +36,11 @@ void Search::set(const Cell &cell, unsigned value) {
     data[cell.row * width + cell.col] = value;
 }
 
-unsigned Search::at(const Cell &cell) const {
+[[gnu::pure]] unsigned Search::at(const Cell &cell) const {
     return data[cell.row * width + cell.col];
 }
 
-unsigned Search::at(unsigned row, unsigned col) const {
+[[gnu::pure]] unsigned Search::at(unsigned row, unsigned col) const {
     return data[row * width + col];
 }
 

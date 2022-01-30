@@ -21,7 +21,7 @@ Cell& Cell::operator=(const Cell &other) {
     return *this;
 }
 
-bool Cell::operator==(const Cell &other) const {
+[[gnu::pure]] bool Cell::operator==(const Cell &other) const {
     return (row == other.row) && (col == other.col);
 }
 

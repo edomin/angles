@@ -34,15 +34,15 @@ bool Field::can_move(content_t required_content, const Cell &cell) const {
      || is_empty(cell.near_left()) || is_empty(cell.near_right());
 }
 
-unsigned Field::get_rows_count() const {
+[[gnu::const]] unsigned Field::get_rows_count() const {
     return ROWS_COUNT;
 }
 
-unsigned Field::get_cols_count() const {
+[[gnu::const]] unsigned Field::get_cols_count() const {
     return COLS_COUNT;
 }
 
-bool Field::is_available(const Cell &cell) const {
+[[gnu::pure]] bool Field::is_available(const Cell &cell) const {
     return (cell.row < ROWS_COUNT) && (cell.col < COLS_COUNT);
 }
 
@@ -73,7 +73,7 @@ bool Field::is_computer(const Cell &cell) const {
     return false;
 }
 
-bool Field::is_adjacents(const Cell &cell1, const Cell &cell2) const {
+[[gnu::pure]] bool Field::is_adjacents(const Cell &cell1, const Cell &cell2) const {
     bool adjacents = false;
     bool cells_available = (cell1.row < ROWS_COUNT) && (cell1.col < COLS_COUNT)
      && (cell2.row < ROWS_COUNT) && (cell2.col < COLS_COUNT);

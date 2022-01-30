@@ -8,18 +8,18 @@ Color::Color(uint32_t rgba)
 
 Color::~Color() {}
 
-float Color::get_r() const {
+[[gnu::pure]] float Color::get_r() const {
     return r;
 }
 
-float Color::get_g() const {
+[[gnu::pure]] float Color::get_g() const {
     return g;
 }
 
-float Color::get_b() const {
+[[gnu::pure]] float Color::get_b() const {
     return b;
 }
 
-float Color::get_a() const {
+[[gnu::pure]] float Color::get_a() const {
     return a;
 }

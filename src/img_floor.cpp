@@ -47,14 +47,14 @@ ImgFloor::~ImgFloor() {
     delete[] data;
 }
 
-unsigned ImgFloor::get_width() {
+[[gnu::pure]] unsigned ImgFloor::get_width() {
     return width;
 }
 
-unsigned ImgFloor::get_height() {
+[[gnu::pure]] unsigned ImgFloor::get_height() {
     return height;
 }
 
-void *ImgFloor::get_data() {
+[[gnu::pure]] void *ImgFloor::get_data() {
     return data;
 }

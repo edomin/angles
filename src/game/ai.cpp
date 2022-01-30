@@ -155,7 +155,7 @@ Step Ai::random_move() {
 
 std::tuple<unsigned, unsigned, Cell> Ai::find_max_value_cell() {
     unsigned max_value = 0;
-    unsigned max_value_search_index;
+    unsigned max_value_search_index = 0;
     Cell     max_value_cell(0, 0);
 
     for (size_t srch_index = 0; srch_index < SEARCHES_COUNT; srch_index++) {

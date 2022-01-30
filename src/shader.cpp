@@ -30,6 +30,6 @@ Shader::~Shader() {
     glDeleteShader(shader_object);
 }
 
-GLuint Shader::get_shader_object() const {
+[[gnu::pure]] GLuint Shader::get_shader_object() const {
     return shader_object;
 }

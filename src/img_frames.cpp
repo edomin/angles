@@ -47,14 +47,14 @@ ImgFrames::~ImgFrames() {
     delete[] data;
 }
 
-unsigned ImgFrames::get_width() {
+[[gnu::pure]] unsigned ImgFrames::get_width() {
     return width;
 }
 
-unsigned ImgFrames::get_height() {
+[[gnu::pure]] unsigned ImgFrames::get_height() {
     return height;
 }
 
-void *ImgFrames::get_data() {
+[[gnu::pure]] void *ImgFrames::get_data() {
     return data;
 }

@@ -101,14 +101,14 @@ bool Window::should_close() {
     return glfwWindowShouldClose(glfw_window);
 }
 
-GLFWwindow *Window::get_glfwwindow() {
+[[gnu::pure]] GLFWwindow *Window::get_glfwwindow() {
     return glfw_window;
 }
 
-unsigned Window::get_width() const {
+[[gnu::pure]] unsigned Window::get_width() const {
     return width;
 }
 
-unsigned Window::get_height() const {
+[[gnu::pure]] unsigned Window::get_height() const {
     return height;
 }

@@ -47,14 +47,14 @@ ImgText::~ImgText() {
     delete[] data;
 }
 
-unsigned ImgText::get_width() {
+[[gnu::pure]] unsigned ImgText::get_width() {
     return width;
 }
 
-unsigned ImgText::get_height() {
+[[gnu::pure]] unsigned ImgText::get_height() {
     return height;
 }
 
-void *ImgText::get_data() {
+[[gnu::pure]] void *ImgText::get_data() {
     return data;
 }

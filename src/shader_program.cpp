@@ -35,6 +35,6 @@ void ShaderProgram::unuse() const {
     glUseProgram(0);
 }
 
-GLuint ShaderProgram::get_program_object() const {
+[[gnu::pure]] GLuint ShaderProgram::get_program_object() const {
     return program_object;
 }

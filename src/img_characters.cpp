@@ -47,14 +47,14 @@ ImgCharacters::~ImgCharacters() {
     delete[] data;
 }
 
-unsigned ImgCharacters::get_width() {
+[[gnu::pure]] unsigned ImgCharacters::get_width() {
     return width;
 }
 
-unsigned ImgCharacters::get_height() {
+[[gnu::pure]] unsigned ImgCharacters::get_height() {
     return height;
 }
 
-void *ImgCharacters::get_data() {
+[[gnu::pure]] void *ImgCharacters::get_data() {
     return data;
 }

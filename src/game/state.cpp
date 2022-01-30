@@ -29,7 +29,7 @@ void State::set_phase(phase_t _phase) {
     phase = _phase;
 };
 
-State::phase_t State::get_phase() const {
+[[gnu::pure]] State::phase_t State::get_phase() const {
     return phase;
 }
 

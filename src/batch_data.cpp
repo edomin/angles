@@ -8,14 +8,14 @@ BatchData::BatchData(const Texture &_texture, size_t _first_vertex_index,
 
 BatchData::~BatchData() {}
 
-const Texture *BatchData::get_texture() const {
+[[gnu::pure]] const Texture *BatchData::get_texture() const {
     return texture;
 }
 
-size_t BatchData::get_first_vertex_index() const {
+[[gnu::pure]] size_t BatchData::get_first_vertex_index() const {
     return first_vertex_index;
 }
 
-size_t BatchData::get_vertices_count() const {
+[[gnu::pure]] size_t BatchData::get_vertices_count() const {
     return vertices_count;
 }
