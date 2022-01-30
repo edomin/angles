@@ -91,16 +91,20 @@ set_target_properties(angles PROPERTIES
 target_compile_options(angles PRIVATE ${ANG_COMPILE_OPTIONS})
 
 target_link_libraries(angles PRIVATE
-    GLEW::glew_s
     ${GLFW3_LIBRARY}
     ${OPENGL_LIBRARIES}
 )
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     target_link_libraries(angles PRIVATE
+        GLEW::glew_s
         ${COMPILER_RUNTIME_LIBRARIES}
         ${CXX_LIBRARY_LIBRARIES}
         ${WINPTHREAD_LIBRARIES}
+    )
+else()
+    target_link_libraries(angles PRIVATE
+        ${GLEW_LIBRARIES}
     )
 endif()
 
