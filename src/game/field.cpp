@@ -2,9 +2,7 @@
 
 #include <cinttypes>
 #include <cstring>
-#include <iostream> // delete me
 #include <sstream>
-#include <utility> // delete me
 
 #include "exception.hpp"
 
@@ -32,8 +30,8 @@ bool Field::can_move(content_t required_content, const Cell &cell) const {
     }
     catch (const Exception&) {}
 
-    return is_empty(Cell{cell.row - 1, cell.col}) || is_empty(Cell{cell.row + 1, cell.col})
-     || is_empty(Cell{cell.row, cell.col - 1}) || is_empty(Cell{cell.row, cell.col + 1});
+    return is_empty(cell.near_top()) || is_empty(cell.near_bottom())
+     || is_empty(cell.near_left()) || is_empty(cell.near_right());
 }
 
 unsigned Field::get_rows_count() const {
@@ -47,15 +45,6 @@ unsigned Field::get_cols_count() const {
 bool Field::is_available(const Cell &cell) const {
     return (cell.row < ROWS_COUNT) && (cell.col < COLS_COUNT);
 }
-
-// bool Field::is_empty(unsigned row, unsigned col) const {
-//     try {
-//         return get_content(row, col) == content_t::EMPTY;
-//     }
-//     catch (const Exception&) {}
-
-//     return false;
-// }
 
 bool Field::is_empty(const Cell &cell) const {
     try {

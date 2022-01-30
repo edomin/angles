@@ -72,7 +72,8 @@ Draw::Draw(Window &_window)
     glClearDepth(DEPTH_RANGE_FAR_VAL);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClearColor(CLEAR_COLOR.get_r(), CLEAR_COLOR.get_g(), CLEAR_COLOR.get_b(), CLEAR_COLOR.get_a());
+    glClearColor(CLEAR_COLOR.get_r(), CLEAR_COLOR.get_g(), CLEAR_COLOR.get_b(),
+     CLEAR_COLOR.get_a());
 }
 
 Draw::~Draw() {}
@@ -102,47 +103,38 @@ void Draw::update_vertices_data() {
     // Тут явно напрашивается рефакторинг и поиск более оптимальных решений (в
     // том числе подумать, в каком контейнере хранить draw queue, как быстро
     // сортировать, надо ли тащить указатель на спрайт или хватит указателя на
-    // текстуру и т. д.), но я уже не успеваю. Обещаю, после сдачи задания
-    // сделаю по уму.
-    auto cmp = [](const outdata_t &a, const outdata_t &b) {
-        float          az;
-        float          bz;
-        const Sprite  *aspr;
-        const Sprite  *bspr;
+    // текстуру и т. д.)
+    auto cmp = [](const OutputRecord &a, const OutputRecord &b) {
         const Texture *atex;
         const Texture *btex;
 
-        std::tie(aspr, std::ignore, std::ignore, az, std::ignore, std::ignore) = a;
-        std::tie(bspr, std::ignore, std::ignore, bz, std::ignore, std::ignore) = b;
+        atex = a.sprite->get_spritesheet()->get_texture();
+        btex = b.sprite->get_spritesheet()->get_texture();
 
-        atex = aspr->get_spritesheet()->get_texture();
-        btex = bspr->get_spritesheet()->get_texture();
-
-        return az == bz ? atex < btex : az > bz;
+        return a.z == b.z ? atex < btex : a.z > b.z;
     };
     std::sort(draw_queue.begin(), draw_queue.end(), cmp);
 
     window_width = static_cast<float>(window->get_width());
     window_height = static_cast<float>(window->get_height());
 
-    for (outdata_t &outdata : draw_queue) {
-        auto           [sprite, x, y, z, hscale, vscale] = outdata;
-        const Texture *texture = sprite->get_spritesheet()->get_texture();
+    for (OutputRecord &outdata : draw_queue) {
+        const Texture *texture = outdata.sprite->get_spritesheet()->get_texture();
         float clip_width = static_cast<float>(
-         sprite->get_spritesheet()->get_clip_width());
+         outdata.sprite->get_spritesheet()->get_clip_width());
         float clip_height = static_cast<float>(
-         sprite->get_spritesheet()->get_clip_height());
-        float pos_upper_left_x = x / window_width - 1.0f;
-        float pos_upper_left_y = 1.0f - y / window_height;
-        float pos_upper_right_x = (x + clip_width * hscale) / window_width
-         - 1.0f;
+         outdata.sprite->get_spritesheet()->get_clip_height());
+        float pos_upper_left_x = outdata.pos.x / window_width - 1.0f;
+        float pos_upper_left_y = 1.0f - outdata.pos.y / window_height;
+        float pos_upper_right_x = (outdata.pos.x + clip_width * outdata.hscale)
+         / window_width - 1.0f;
         float pos_upper_right_y = pos_upper_left_y;
         float pos_lower_left_x = pos_upper_left_x;
-        float pos_lower_left_y = 1.0f - (y + clip_height * vscale)
-         / window_height;
+        float pos_lower_left_y = 1.0f - (outdata.pos.y + clip_height
+         * outdata.vscale) / window_height;
         float pos_lower_right_x = pos_upper_right_x;
         float pos_lower_right_y = pos_lower_left_y;
-        float pos_z = z / ABS_Z_MAX + 0.5f;
+        float pos_z = outdata.z / ABS_Z_MAX + 0.5f;
 
         if (!current_texture)
             current_texture = texture;
@@ -157,17 +149,23 @@ void Draw::update_vertices_data() {
         }
 
         add_one_vertex_data(pos_upper_left_x, pos_upper_left_y, pos_z,
-         sprite->get_upper_left_u(), sprite->get_upper_left_v());
-        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,pos_z,
-         sprite->get_upper_right_u(), sprite->get_upper_right_v());
-        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,pos_z,
-         sprite->get_lower_left_u(), sprite->get_lower_left_v());
-        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y,pos_z,
-         sprite->get_upper_right_u(), sprite->get_upper_right_v());
-        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y,pos_z,
-         sprite->get_lower_left_u(), sprite->get_lower_left_v());
-        add_one_vertex_data(pos_lower_right_x, pos_lower_right_y,pos_z,
-         sprite->get_lower_right_u(), sprite->get_lower_right_v());
+         outdata.sprite->get_upper_left_u(),
+         outdata.sprite->get_upper_left_v());
+        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y, pos_z,
+         outdata.sprite->get_upper_right_u(),
+         outdata.sprite->get_upper_right_v());
+        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y, pos_z,
+         outdata.sprite->get_lower_left_u(),
+         outdata.sprite->get_lower_left_v());
+        add_one_vertex_data(pos_upper_right_x, pos_upper_right_y, pos_z,
+         outdata.sprite->get_upper_right_u(),
+         outdata.sprite->get_upper_right_v());
+        add_one_vertex_data(pos_lower_left_x, pos_lower_left_y, pos_z,
+         outdata.sprite->get_lower_left_u(),
+         outdata.sprite->get_lower_left_v());
+        add_one_vertex_data(pos_lower_right_x, pos_lower_right_y, pos_z,
+         outdata.sprite->get_lower_right_u(),
+         outdata.sprite->get_lower_right_v());
 
         vertex_index += 6;
     }
@@ -177,18 +175,11 @@ void Draw::update_vertices_data() {
     batches_data.push_back(batch_data);
 }
 
-// void Draw::put_sprite(const Sprite &sprite, float x, float y, float z,
-//  float hscale, float vscale) {
-//     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
-//         vscale = hscale;
-//     draw_queue.push_back({&sprite, x, y, z, hscale, vscale});
-// }
-
 void Draw::put_sprite(const Sprite &sprite, const Vec2 &pos, float z, float hscale,
  float vscale) {
     if (std::abs(vscale) <= std::abs(std::numeric_limits<float>::epsilon()))
         vscale = hscale;
-    draw_queue.push_back({&sprite, pos.x, pos.y, z, hscale, vscale});
+    draw_queue.push_back(OutputRecord{sprite, pos, z, hscale, vscale});
 }
 
 void Draw::update() {
@@ -196,7 +187,6 @@ void Draw::update() {
 
     update_vertices_data();
 
-    // glClearColor(color.get_r(), color.get_g(), color.get_b(), color.get_a());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader_program->use();

@@ -52,7 +52,7 @@ Vec2 Vec2::dir_to(const Vec2 &other) const {
     return other - *this;
 }
 
-// for direction vectors
+// for direction vectors only
 Vec2 &Vec2::normalize() {
     *this /= sqrt(x * x + y * y);
 

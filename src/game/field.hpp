@@ -46,7 +46,6 @@ class Field {
         unsigned get_cols_count() const;
         bool is_available(const Cell &cell) const;
         bool is_empty(const Cell &cell) const;
-        // bool is_empty(unsigned row, unsigned col) const;
         bool is_player(const Cell &cell) const;
         bool is_computer(const Cell &cell) const;
         bool is_adjacents(const Cell &cell1, const Cell &cell2) const;

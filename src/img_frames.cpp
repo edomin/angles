@@ -11,6 +11,10 @@ namespace astfrm {
 
 namespace {
     constexpr unsigned COLOR_COMPONENTS = 4;
+    constexpr unsigned RED_CHANNEL_INDEX = 0;
+    constexpr unsigned GREEN_CHANNEL_INDEX = 1;
+    constexpr unsigned BLUE_CHANNEL_INDEX = 2;
+    constexpr unsigned ALPHA_CHANNEL_INDEX = 3;
 }
 
 ImgFrames::ImgFrames()
@@ -22,10 +26,10 @@ ImgFrames::ImgFrames()
     static_assert(astfrm::gimp_image.bytes_per_pixel == COLOR_COMPONENTS);
 
     for (size_t i = 0; i < pixels_count; i++) {
-        size_t rindex = i * COLOR_COMPONENTS;
-        size_t gindex = i * COLOR_COMPONENTS + 1;
-        size_t bindex = i * COLOR_COMPONENTS + 2;
-        size_t aindex = i * COLOR_COMPONENTS + 3;
+        size_t rindex = i * COLOR_COMPONENTS + RED_CHANNEL_INDEX;
+        size_t gindex = i * COLOR_COMPONENTS + GREEN_CHANNEL_INDEX;
+        size_t bindex = i * COLOR_COMPONENTS + BLUE_CHANNEL_INDEX;
+        size_t aindex = i * COLOR_COMPONENTS + ALPHA_CHANNEL_INDEX;
 
         data[rindex] = astfrm::gimp_image.pixel_data[rindex];
         data[gindex] = astfrm::gimp_image.pixel_data[gindex];

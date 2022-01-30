@@ -18,12 +18,9 @@ class Mouse {
         };
 
     private:
-        GLFWwindow* glfw_window;
-
+        GLFWwindow              *glfw_window;
         std::map<button_t, bool> prev_button_state;
         std::map<button_t, bool> button_state;
-
-        // static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
     public:
         Mouse(Window &window);

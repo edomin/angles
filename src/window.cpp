@@ -60,7 +60,8 @@ Window::Window(unsigned _width, unsigned _height, const std::string &caption)
     for (auto &[key, value] : DEFAULT_WINDOW_HINTS)
         glfwWindowHint(key, value);
 
-    glfw_window = glfwCreateWindow(width, height, caption.c_str(), nullptr, nullptr);
+    glfw_window = glfwCreateWindow(width, height, caption.c_str(), nullptr,
+     nullptr);
 
     if (!glfw_window)
         ANG_THROW("glfwCreateWindow() failed");
@@ -70,7 +71,8 @@ Window::Window(unsigned _width, unsigned _height, const std::string &caption)
     glewExperimental = true;
     glew_error = glewInit();
     if (glew_error != GLEW_OK)
-        ANG_THROW(reinterpret_cast<const char *>(glewGetErrorString(glew_error)));
+        ANG_THROW(reinterpret_cast<const char *>(
+         glewGetErrorString(glew_error)));
 
     glfwSwapInterval(1);
 

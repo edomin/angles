@@ -14,8 +14,6 @@ Keyboard::Keyboard(Window &window)
 , keys() {
     for (auto &[key, value] : DEFAULT_KEYBOARD_INPUT_MODES)
         glfwSetInputMode(glfw_window, key, value);
-
-
 }
 
 Keyboard::~Keyboard() {

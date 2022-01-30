@@ -9,25 +9,25 @@
 #include <GLFW/glfw3.h>
 
 #include "batch_data.hpp"
-#include "vbo.hpp"
-#include "vec2.hpp"
+#include "output_record.hpp"
 #include "shader_program.hpp"
 #include "sprite.hpp"
+#include "vbo.hpp"
+#include "vec2.hpp"
 #include "vertex_attribute_array.hpp"
 #include "window.hpp"
 
 class Draw {
     private:
-        // typedef std::pair<float, float> coords_t;
-        typedef std::tuple<
-            const Sprite *,
-            float, // x - 0..window_width
-            float, // y - 0..window_height
-            float, // z - -int32max..+int32max
-            float, // hscale - any
-            float  // vscale - any
-        > outdata_t;
-        typedef std::vector<outdata_t> draw_queue_t;
+        // typedef std::tuple<
+        //     const Sprite *,
+        //     float, // x - 0..window_width
+        //     float, // y - 0..window_height
+        //     float, // z - -int32max..+int32max
+        //     float, // hscale - any
+        //     float  // vscale - any
+        // > outdata_t;
+        typedef std::vector<OutputRecord> draw_queue_t;
 
         static constexpr float         SCALE_NO             = 1.0f;
         static constexpr float         SCALE_SAME_AS_HSCALE = 0.0f;
@@ -50,9 +50,6 @@ class Draw {
         Draw(Window &_window);
         ~Draw();
 
-        // void fill(const Color &color);
-        // void put_sprite(const Sprite &sprite, float x, float y, float z,
-        //  float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
         void put_sprite(const Sprite &sprite, const Vec2 &pos, float z,
          float hscale = SCALE_NO, float vscale = SCALE_SAME_AS_HSCALE);
         void update();

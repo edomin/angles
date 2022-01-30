@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include "debug.hpp" //delete me
+#include "exception.hpp"
 #include "game/searching_cell_record.hpp"
 
 namespace {
@@ -191,6 +191,7 @@ Step Ai::move() {
         bool     choosen = false;
         Search  *maxval_srch = searches[max_value_search_index];
 
+        // Не смог придумать, как сделать этот кусок красивее
         if (field->is_empty(max_value_cell.near_top()) && maxval_srch->at(max_value_cell.near_top()) > next_value) {
             next_cell = max_value_cell.near_top();
             choosen = true;
@@ -222,8 +223,6 @@ Step Ai::process_turn() {
         search(i);
 
     return move();
-
-    // debug_output();
 }
 
 } // game::

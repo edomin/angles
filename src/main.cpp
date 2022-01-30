@@ -11,7 +11,6 @@ using namespace std::string_literals;
 int main(int argc, char **argv) {
     App                  app;
     Window               window(512, 512, "angles"s);
-    // ResKeeper            resources;
     [[maybe_unused]] Vao vao;
     Draw                 draw(window);
     game::Game           gm(app, window, draw);
