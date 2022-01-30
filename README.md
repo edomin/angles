@@ -27,6 +27,15 @@ With shortcut for Linux:
 $ make build_release
 ```
 
+Manually for Windows:
+```
+$ mkdir cmake_build
+$ cd cmake_build
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/x86_64-w64-mingw32.cmake
+$ make
+$ cd ..
+```
+
 With shortcut for Windows:
 ```
 $ make build_release toolchain=x86_64-w64-mingw32
