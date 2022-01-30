@@ -236,12 +236,10 @@ void Game::render_phase_player_turn() {
 void Game::render_possible_direction(const Cell &cell, const Cell &mouse_cell,
  Sprite *spr_selected, Sprite *spr_direction) {
     if (field.is_empty(cell)) {
-        if (mouse_cell == cell)
-            draw->put_sprite(*spr_selected, cell_to_canvas_coords(cell),
-             FRAMES_Z, CANVAS_SCALE_FACTOR);
-        else
-            draw->put_sprite(*spr_direction, cell_to_canvas_coords(cell),
-             FRAMES_Z, CANVAS_SCALE_FACTOR);
+        Sprite *spr_frame = (mouse_cell == cell) ? spr_selected : spr_direction;
+
+        draw->put_sprite(*spr_frame, cell_to_canvas_coords(cell), FRAMES_Z,
+         CANVAS_SCALE_FACTOR);
     }
 }
 
@@ -323,7 +321,8 @@ void Game::render() {
 
     for (unsigned row = 0; row < field.get_rows_count(); row++) {
         for (unsigned col = 0; col < field.get_cols_count(); col++) {
-            Sprite *character_sprite = field_content_sprites[field.get_content(row, col)];
+            Field::content_t content = field.get_content(row, col);
+            Sprite          *character_sprite = field_content_sprites[content];
 
             if (character_sprite != nullptr)
                 draw->put_sprite(*character_sprite,
