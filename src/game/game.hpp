@@ -40,11 +40,6 @@ class Game {
 
         Cell selected_cell;
 
-        // std::tuple<
-        //     unsigned, // row
-        //     unsigned  // col
-        // > selected_cell;
-
         double delta_time;
 
         std::tuple<
@@ -56,6 +51,8 @@ class Game {
 
         bool victory;
         bool defeat;
+
+        Cell mouse_coords_to_cell();
 
         void update_phase_player_turn();
         void update_phase_character_selected();

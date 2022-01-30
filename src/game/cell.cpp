@@ -25,4 +25,20 @@ bool Cell::operator==(const Cell &other) const {
     return (row == other.row) && (col == other.col);
 }
 
+Cell Cell::near_top() {
+    return Cell{row - 1, col};
+}
+
+Cell Cell::near_bottom() {
+    return Cell{row + 1, col};
+}
+
+Cell Cell::near_left() {
+    return Cell{row, col - 1};
+}
+
+Cell Cell::near_right() {
+    return Cell{row, col + 1};
+}
+
 } // game::

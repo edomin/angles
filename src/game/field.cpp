@@ -102,16 +102,19 @@ bool Field::is_adjacents(const Cell &cell1, const Cell &cell2) const {
     return adjacents;
 }
 
-Field::content_t Field::get_content(const Cell &cell) const {
-    if ((cell.row < ROWS_COUNT) && (cell.col < COLS_COUNT))
-        return content[cell.row][cell.col];
+Field::content_t Field::get_content(unsigned row, unsigned col) const {
+    if ((row < ROWS_COUNT) && (col < COLS_COUNT))
+        return content[row][col];
 
-    // I want to use std::format, by my gcc don't have <format> header
     std::stringstream msgss;
 
-    msgss << "Out of bounds: row = " << cell.row << ", col = " << cell.col;
+    msgss << "Out of bounds: row = " << row << ", col = " << col;
 
     ANG_THROW(msgss.str().c_str());
+}
+
+Field::content_t Field::get_content(const Cell &cell) const {
+    return get_content(cell.row, cell.col);
 }
 
 } // game::

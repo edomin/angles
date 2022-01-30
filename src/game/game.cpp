@@ -72,18 +72,6 @@ namespace {
     inline unsigned canvas_coord_to_cell(float coord) {
         return floor(coord / (CELL_SIDE * CANVAS_SCALE_FACTOR));
     }
-
-    // // Converts y to row index or x to col index
-    // inline unsigned mouse_coord_to_cell(float coord) {
-    //     return floor(coord / (CELL_SIDE * MOUSE_SCALE_FACTOR));
-    // }
-    inline game::Cell mouse_coords_to_cell(float x, float y) {
-        float    scaled_side = CELL_SIDE * MOUSE_SCALE_FACTOR;
-        unsigned row = static_cast<unsigned>(floor(y / scaled_side));
-        unsigned col = static_cast<unsigned>(floor(x / scaled_side));
-
-        return game::Cell{row, col};
-    }
 }
 
 namespace game {
@@ -136,10 +124,18 @@ Game::~Game() {
 
 }
 
+Cell Game::mouse_coords_to_cell() {
+    float    scaled_side = CELL_SIDE * MOUSE_SCALE_FACTOR;
+    Vec2     cursor_pos = mouse.get_cursor_pos();
+    unsigned row = static_cast<unsigned>(floor(cursor_pos.y / scaled_side));
+    unsigned col = static_cast<unsigned>(floor(cursor_pos.x / scaled_side));
+
+    return Cell{row, col};
+}
+
 void Game::update_phase_player_turn() {
     if (mouse.left_button_down()) {
-        Cell cell = mouse_coords_to_cell(mouse.get_cursor_pos().x,
-         mouse.get_cursor_pos().y);
+        Cell cell = mouse_coords_to_cell();
 
         if (field.can_move(Field::content_t::PLAYER, cell)) {
             selected_cell = cell;
@@ -156,8 +152,7 @@ void Game::update_phase_character_selected() {
     }
 
     if (mouse.left_button_down()) {
-        Cell mouse_cell = mouse_coords_to_cell(mouse.get_cursor_pos().x,
-         mouse.get_cursor_pos().y);
+        Cell mouse_cell = mouse_coords_to_cell();
         bool adjacents = field.is_adjacents(selected_cell, mouse_cell);
 
         if (field.is_empty(mouse_cell) && adjacents) {
@@ -224,7 +219,7 @@ void Game::render_white_frames() {
 }
 
 void Game::render_phase_player_turn() {
-    Cell    cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
+    Cell    cell = mouse_coords_to_cell();
     Sprite *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
 
     if (field.can_move(Field::content_t::PLAYER, cell))
@@ -245,21 +240,21 @@ void Game::render_possible_direction(const Cell &cell, const Cell &mouse_cell,
 }
 
 void Game::render_phase_character_selected() {
-    Cell   mouse_cell = mouse_coords_to_cell(mouse.get_cursor_pos().x, mouse.get_cursor_pos().y);
+    Cell    mouse_cell = mouse_coords_to_cell();
     Sprite *spr_yellow_frame = resources.get_sprite("yellow_frame"s);
     Sprite *spr_green_frame = resources.get_sprite("green_frame"s);
 
     draw->put_sprite(*spr_yellow_frame, cell_to_canvas_coord(selected_cell.col),
      cell_to_canvas_coord(selected_cell.row), FRAMES_Z, CANVAS_SCALE_FACTOR);
 
-    render_possible_direction(Cell{selected_cell.row - 1, selected_cell.col}, Cell{mouse_cell.row,
-     mouse_cell.col}, spr_yellow_frame, spr_green_frame);
-    render_possible_direction(Cell{selected_cell.row + 1, selected_cell.col}, Cell{mouse_cell.row,
-     mouse_cell.col}, spr_yellow_frame, spr_green_frame);
-    render_possible_direction(Cell{selected_cell.row, selected_cell.col - 1}, Cell{mouse_cell.row,
-     mouse_cell.col}, spr_yellow_frame, spr_green_frame);
-    render_possible_direction(Cell{selected_cell.row, selected_cell.col + 1}, Cell{mouse_cell.row,
-     mouse_cell.col}, spr_yellow_frame, spr_green_frame);
+    render_possible_direction(selected_cell.near_top(), mouse_cell,
+     spr_yellow_frame, spr_green_frame);
+    render_possible_direction(selected_cell.near_bottom(), mouse_cell,
+     spr_yellow_frame, spr_green_frame);
+    render_possible_direction(selected_cell.near_left(), mouse_cell,
+     spr_yellow_frame, spr_green_frame);
+    render_possible_direction(selected_cell.near_right(), mouse_cell,
+     spr_yellow_frame, spr_green_frame);
 }
 
 void Game::render_phase_player_animation() {
@@ -312,14 +307,13 @@ bool Game::is_defeat() {
 void Game::render() {
     Sprite *spr_field = resources.get_sprite("floor"s);
 
-
     draw->put_sprite(*spr_field, 0.0f, 0.0f, FIELD_Z, CANVAS_SCALE_FACTOR);
 
     render_white_frames();
 
     for (unsigned row = 0; row < field.get_rows_count(); row++) {
         for (unsigned col = 0; col < field.get_cols_count(); col++) {
-            Sprite *character_sprite = field_content_sprites[field.get_content(Cell{row, col})];
+            Sprite *character_sprite = field_content_sprites[field.get_content(row, col)];
 
             if (character_sprite != nullptr)
                 draw->put_sprite(*character_sprite,

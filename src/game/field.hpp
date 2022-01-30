@@ -51,6 +51,7 @@ class Field {
         bool is_computer(const Cell &cell) const;
         bool is_adjacents(const Cell &cell1, const Cell &cell2) const;
         content_t get_content(const Cell &cell) const;
+        content_t get_content(unsigned row, unsigned col) const;
 };
 
 } // game::
