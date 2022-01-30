@@ -25,19 +25,19 @@ bool Cell::operator==(const Cell &other) const {
     return (row == other.row) && (col == other.col);
 }
 
-Cell Cell::near_top() {
+Cell Cell::near_top() const {
     return Cell{row - 1, col};
 }
 
-Cell Cell::near_bottom() {
+Cell Cell::near_bottom() const {
     return Cell{row + 1, col};
 }
 
-Cell Cell::near_left() {
+Cell Cell::near_left() const {
     return Cell{row, col - 1};
 }
 
-Cell Cell::near_right() {
+Cell Cell::near_right() const {
     return Cell{row, col + 1};
 }
 

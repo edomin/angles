@@ -15,10 +15,10 @@ class Cell {
         Cell& operator=(const Cell &other);
         bool operator==(const Cell &other) const;
 
-        Cell near_top();
-        Cell near_bottom();
-        Cell near_left();
-        Cell near_right();
+        Cell near_top() const;
+        Cell near_bottom() const;
+        Cell near_left() const;
+        Cell near_right() const;
 };
 
 } // game::

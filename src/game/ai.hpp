@@ -25,6 +25,8 @@ class Ai {
         unsigned get_cell_starting_value(const Cell &cell);
         bool update_value(const Search &search, Search *new_values,
          unsigned value, const Cell &cell);
+        bool update_near_values(const Search &search, Search *new_values,
+         unsigned value, const Cell &cell);
         bool update_values(Search *search, unsigned *value);
         void search(unsigned search_index);
         std::tuple<Cell, Cell> move();

@@ -33,9 +33,8 @@ unsigned Ai::get_cell_starting_value(const Cell &cell) {
 
     for (unsigned i = 0; i < SEARCHES_COUNT; i++) {
         SearchingCellRecord rec = SEARCHING_CELLS.at(i);
-        Cell               *srch_cell = &rec.cell;
 
-        if (cell == *srch_cell) {
+        if (cell == rec.cell) {
             result = rec.empty_value;
             break;
         }
@@ -67,32 +66,33 @@ bool Ai::update_value(const Search &search, Search *new_values, unsigned value,
     return must_stop;
 }
 
+bool Ai::update_near_values(const Search &search, Search *new_values,
+ unsigned value, const Cell &cell) {
+    return update_value(search, new_values, value, cell.near_top())
+     || update_value(search, new_values, value, cell.near_bottom())
+     || update_value(search, new_values, value, cell.near_left())
+     || update_value(search, new_values, value, cell.near_right());
+}
+
 // returns true if must stop filling
 bool Ai::update_values(Search *search, unsigned *value) {
-    Search new_values(field->get_rows_count(), field->get_cols_count());
-    bool   must_stop = false;
+    unsigned rows_count = field->get_rows_count();
+    unsigned cols_count = field->get_cols_count();
+    Search   new_values(rows_count, cols_count);
+    bool     must_stop = false;
 
     (*value)--;
 
     new_values = *search;
 
-    for (unsigned row = 0; (row < field->get_rows_count()); row++) {
-        for (unsigned col = 0; col < field->get_cols_count(); col++) {
+    for (unsigned row = 0; (row < rows_count) && !must_stop; row++) {
+        for (unsigned col = 0; (col < cols_count) && !must_stop; col++) {
             if (search->at(row, col) != 0) {
-                if (update_value(*search, &new_values, *value, Cell{row - 1, col}))
-                    must_stop = true;
-                else if (update_value(*search, &new_values, *value, Cell{row + 1, col}))
-                    must_stop = true;
-                else if (update_value(*search, &new_values, *value, Cell{row, col - 1}))
-                    must_stop = true;
-                else if (update_value(*search, &new_values, *value, Cell{row, col + 1}))
-                    must_stop = true;
-                if (must_stop)
-                    goto outer_break;
+                must_stop = update_near_values(*search, &new_values, *value,
+                 Cell{row, col});
             }
         }
     }
-outer_break:
 
     if (new_values == *search)
         return true;
