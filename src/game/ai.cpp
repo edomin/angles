@@ -126,23 +126,22 @@ void Ai::search(unsigned search_index) {
         must_stop = update_values(search, &value);
 }
 
-std::tuple<Cell, Cell> Ai::move() {
+Step Ai::move() {
     unsigned max_value = 0;
     unsigned max_value_search_index;
-    Cell     max_value_cell(0.0f, 0.0f);
-    // unsigned max_value_row;
-    // unsigned max_value_col;
-    Cell result_pos(0.0f, 0.0f);
-    Cell result_dst(0.0f, 0.0f);
+    Cell     max_value_cell(0, 0);
+    Step     result({0, 0}, {0, 0});
 
-    for (size_t search_index = 0; search_index < SEARCHES_COUNT; search_index++) {
+    for (size_t srch_index = 0; srch_index < SEARCHES_COUNT; srch_index++) {
         for (unsigned row = 0; row < Field::ROWS_COUNT; row++) {
             for (unsigned col = 0; col < Field::COLS_COUNT; col++) {
                 Cell cell(row, col);
+                bool can_move = field->can_move(Field::content_t::COMPUTER,
+                 cell);
 
-                if (field->can_move(Field::content_t::COMPUTER, cell) && searches[search_index]->at(cell) > max_value) {
-                    max_value = searches[search_index]->at(cell);
-                    max_value_search_index = search_index;
+                if (can_move && searches[srch_index]->at(cell) > max_value) {
+                    max_value = searches[srch_index]->at(cell);
+                    max_value_search_index = srch_index;
                     max_value_cell = cell;
                 }
             }
@@ -151,39 +150,38 @@ std::tuple<Cell, Cell> Ai::move() {
 
     if (max_value != 0) {
         unsigned next_value = 0;
-        Cell     next_cell(0.0f, 0.0f);
+        Cell     next_cell(0, 0);
         bool     choosen = false;
+        Search  *maxval_srch = searches[max_value_search_index];
 
-        if (field->is_empty(max_value_cell.near_top()) && searches[max_value_search_index]->at(max_value_cell.near_top()) > next_value) {
+        if (field->is_empty(max_value_cell.near_top()) && maxval_srch->at(max_value_cell.near_top()) > next_value) {
             next_cell = max_value_cell.near_top();
             choosen = true;
-        } else if (field->is_empty(max_value_cell.near_bottom()) && searches[max_value_search_index]->at(max_value_cell.near_bottom()) > next_value) {
+        } else if (field->is_empty(max_value_cell.near_bottom()) && maxval_srch->at(max_value_cell.near_bottom()) > next_value) {
             next_cell = max_value_cell.near_bottom();
             choosen = true;
-        } else if (field->is_empty(max_value_cell.near_left()) && searches[max_value_search_index]->at(max_value_cell.near_left()) > next_value) {
+        } else if (field->is_empty(max_value_cell.near_left()) && maxval_srch->at(max_value_cell.near_left()) > next_value) {
             next_cell = max_value_cell.near_left();
             choosen = true;
-        } else if (field->is_empty(max_value_cell.near_right()) && searches[max_value_search_index]->at(max_value_cell.near_right()) > next_value) {
+        } else if (field->is_empty(max_value_cell.near_right()) && maxval_srch->at(max_value_cell.near_right()) > next_value) {
             next_cell = max_value_cell.near_right();
             choosen = true;
         }
 
-        if (choosen) {
-            // field->unset_content(max_value_cell);
-            result_pos = max_value_cell;
-            result_dst = next_cell;
-        } else {
+        if (choosen)
+            result = {max_value_cell, next_cell};
+        else
             max_value = 0;
-        }
     }
 
     if (max_value == 0) {
         // random move
         for (unsigned row = 0; row < field->get_rows_count(); row++) {
             for (unsigned col = 0; col < field->get_rows_count(); col++) {
-                if (field->can_move(Field::content_t::COMPUTER, Cell{row, col})) {
-                    Cell cell(row, col);
-                    Cell next_cell(0.0f, 0.0f);
+                Cell cell(row, col);
+
+                if (field->can_move(Field::content_t::COMPUTER, cell)) {
+                    Cell next_cell(0, 0);
 
                     if (field->is_empty(cell.near_top()))
                         next_cell = cell.near_top();
@@ -194,21 +192,16 @@ std::tuple<Cell, Cell> Ai::move() {
                     else if (field->is_empty(cell.near_right()))
                         next_cell = cell.near_right();
 
-                    // field->unset_content(Cell{row, col});
-
-                    result_pos = cell;
-                    result_dst = next_cell;
-
-                    return {result_pos, result_dst};
+                    return {cell, next_cell};
                 }
             }
         }
     }
 
-    return {result_pos, result_dst};
+    return result;
 }
 
-std::tuple<Cell, Cell> Ai::process_turn() {
+Step Ai::process_turn() {
     for (size_t i = 0; i < SEARCHES_COUNT; i++)
         search(i);
 

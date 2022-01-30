@@ -2,12 +2,12 @@
 #define GAME_AI_HPP
 
 #include <vector>
-#include <tuple>
 #include <unordered_map>
 
 #include "game/cell.hpp"
 #include "game/field.hpp"
 #include "game/search.hpp"
+#include "game/step.hpp"
 
 namespace game {
 
@@ -25,13 +25,13 @@ class Ai {
          unsigned value, const Cell &cell);
         bool update_values(Search *search, unsigned *value);
         void search(unsigned search_index);
-        std::tuple<Cell, Cell> move();
+        Step move();
 
     public:
         Ai(Field &_field);
         ~Ai();
 
-        std::tuple<Cell, Cell> process_turn();
+        Step process_turn();
 };
 
 } // game::

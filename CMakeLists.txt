@@ -50,6 +50,7 @@ list(APPEND ANG_SOURCES
     "${CMAKE_SOURCE_DIR}/src/game/search.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/searching_cell_record.cpp"
     "${CMAKE_SOURCE_DIR}/src/game/state.cpp"
+    "${CMAKE_SOURCE_DIR}/src/game/step.cpp"
     "${CMAKE_SOURCE_DIR}/src/iimg.cpp"
     "${CMAKE_SOURCE_DIR}/src/img_characters.cpp"
     "${CMAKE_SOURCE_DIR}/src/img_floor.cpp"
